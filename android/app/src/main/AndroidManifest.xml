@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sahutalai.admin_sahu_talai">
    <application
-        android:label="admin_sahu_talai"
+        android:label="Admin Kamus Sahu"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
