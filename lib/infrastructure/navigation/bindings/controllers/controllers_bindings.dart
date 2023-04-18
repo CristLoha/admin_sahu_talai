@@ -1,0 +1,1 @@
+export 'package:admin_sahu_talai/infrastructure/navigation/bindings/controllers/home.controller.binding.dart'; 
