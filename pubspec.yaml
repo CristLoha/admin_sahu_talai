@@ -20,5 +20,8 @@ dev_dependencies:
     sdk: flutter
 
 flutter: 
+  assets: 
+    - assets/images/
+    - assets/lottie/
   uses-material-design: true
 
