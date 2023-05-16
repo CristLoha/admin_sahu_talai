@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../widgets/text_underline.dart';
 import 'controllers/home.controller.dart';
 
 class HomeScreen extends GetView<HomeController> {
@@ -17,6 +18,7 @@ class HomeScreen extends GetView<HomeController> {
         padding: EdgeInsets.all(24),
         children: [
           TextFormField(
+            textCapitalization: TextCapitalization.sentences,
             onChanged: controller.search,
           ),
           StreamBuilder<QuerySnapshot>(
@@ -32,15 +34,10 @@ class HomeScreen extends GetView<HomeController> {
               }
 
               return Obx(() {
-                if (controller.searchResults.isNotEmpty) {
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: controller.searchResults.length,
-                    itemBuilder: (context, index) => ListTile(
-                      title: Text(controller.searchResults[index]),
-                    ),
-                  );
-                } else {
+                // Jika pengguna belum memulai pencarian (controller.searchResults kosong)
+                // atau jika pencarian tidak menghasilkan hasil, tampilkan semua data dari Firebase.
+                if (controller.searchResults.isEmpty ||
+                    controller.searchResults.last == "Data tidak cocok") {
                   return ListView(
                     shrinkWrap: true,
                     children:
@@ -48,9 +45,22 @@ class HomeScreen extends GetView<HomeController> {
                       Map<String, dynamic> data =
                           document.data()! as Map<String, dynamic>;
                       return ListTile(
-                        title: Text(data['kataIndonesia']),
+                        title: UnderlineText(
+                          text: data['kataSahu'],
+                        ),
                       );
                     }).toList(),
+                  );
+                } else {
+                  // Jika pengguna telah memulai pencarian dan pencarian menghasilkan hasil, tampilkan hasil pencarian.
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: controller.searchResults.length,
+                    itemBuilder: (context, index) => ListTile(
+                      title: UnderlineText(
+                        text: controller.searchResults[index],
+                      ),
+                    ),
                   );
                 }
               });

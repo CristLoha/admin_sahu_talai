@@ -1,3 +1,4 @@
+///menghapus karakter _
 /// Representasi simpul dalam Trie
 class TrieNode {
   /// Anak dari simpul Trie ini, dipetakan berdasarkan karakter mereka
@@ -22,7 +23,7 @@ class AhoCorasick {
   void buildTrie(List<String> patterns) {
     for (int i = 0; i < patterns.length; i++) {
       TrieNode cur = root;
-      for (String char in patterns[i].split('')) {
+      for (String char in patterns[i].replaceAll('_', '').split('')) {
         if (cur.child.containsKey(char)) {
           cur = cur.child[char]!;
         } else {
@@ -32,8 +33,6 @@ class AhoCorasick {
         }
       }
       cur.patternInd = i;
-
-      /// Menetapkan indeks pola untuk simpul ini
     }
   }
 
@@ -77,6 +76,7 @@ class AhoCorasick {
 
     for (int i = 0; i < text.length; i++) {
       String char = text[i];
+      if (char == '_') continue; // skip underscore
       if (parent.child.containsKey(char)) {
         parent = parent.child[char]!;
 
@@ -94,7 +94,6 @@ class AhoCorasick {
           parent = parent.suffixLink!;
         }
 
-        /// Jika anak simpul yang sesuai ditemukan, mundur satu langkah dalam teks
         if (parent.child.containsKey(char)) {
           i--;
         }
