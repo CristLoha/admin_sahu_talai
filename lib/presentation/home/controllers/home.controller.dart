@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../models/aho_corasick.dart';
 
 class HomeController extends GetxController {
+  final TextEditingController searchController =
+      TextEditingController(); // Tambahkan ini
   final CollectionReference kamus =
       FirebaseFirestore.instance.collection('kamus');
   final AhoCorasick ahoCorasick = AhoCorasick();
@@ -31,37 +34,54 @@ class HomeController extends GetxController {
     ahoCorasick.buildSuffixAndOutputLinks();
   }
 
-  void search(String query) {
-    query = query.replaceAll('_', '');
-    final indices = List.generate(patterns.length, (_) => <int>[]);
+  void search() {
+    String query =
+        searchController.text.replaceAll('_', ''); // no longer redefining query
+    List<String> tokens = query.split(' ');
+    query.replaceAllMapped(RegExp(r'_\w'), (m) => '${m.group(0)![1]}̲');
     Stopwatch stopwatch = Stopwatch()..start();
-    ahoCorasick.searchPattern(query, indices);
-    stopwatch.stop();
+
     searchResults.clear();
     bool dataFound = false;
 
-    for (int i = 0; i < patterns.length; i++) {
-      if (indices[i].isNotEmpty) {
-        String originalPattern = patterns.values.elementAt(i);
-        searchResults.add(originalPattern);
-        dataFound = true;
+    // Melakukan pencarian untuk setiap token
+    for (String token in tokens) {
+      final indices = List.generate(patterns.length, (_) => <int>[]);
+      ahoCorasick.searchPattern(
+          token, indices); // Melakukan pencarian untuk token ini
 
-        print('Kata "$originalPattern" ditemukan!');
-        print('Total kemunculan "$originalPattern": ${indices[i].length}');
-        print('Posisi kemunculan ke-${i + 1}: ${indices[i].join(', ')}');
-        print('----');
+      for (int i = 0; i < patterns.length; i++) {
+        if (indices[i].isNotEmpty) {
+          String originalPattern = patterns.values.elementAt(i);
+          if (!searchResults.contains(originalPattern)) {
+            // Tambahkan pemeriksaan ini untuk menghindari duplikat
+            searchResults.add(originalPattern);
+            dataFound = true;
+
+            print('Kata "$originalPattern" ditemukan pada kata "$token"!');
+            print('Total kemunculan "$originalPattern": ${indices[i].length}');
+            print('Posisi kemunculan ke-${i + 1}: ${indices[i].join(', ')}');
+            print('----');
+          }
+        }
       }
     }
 
+    stopwatch.stop();
+
     if (dataFound) {
-      Get.snackbar(
-        'Hasil Pencarian',
-        'Kata "$query" ditemukan dalam ${stopwatch.elapsed.inMilliseconds} ms',
-      );
+      // Get.snackbar(
+      //   'Hasil Pencarian',
+      //   'Kata ditemukan dalam ${stopwatch.elapsed.inMilliseconds} ms',
+      // );
     } else {
       searchResults.clear();
       searchResults.add("Data tidak cocok");
       print('Data tidak cocok');
+      Get.snackbar(
+        'Hasil Pencarian',
+        'Kata tidak ditemukan',
+      );
     }
 
     print(

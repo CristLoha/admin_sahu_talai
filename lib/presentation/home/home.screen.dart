@@ -19,8 +19,12 @@ class HomeScreen extends GetView<HomeController> {
         children: [
           TextFormField(
             textCapitalization: TextCapitalization.sentences,
-            onChanged: controller.search,
+            controller: controller.searchController, // Gunakan controller ini
           ),
+          SizedBox(height: 10),
+          ElevatedButton(
+              onPressed: () => controller.search(), child: Text('Cari')),
+          SizedBox(height: 10),
           StreamBuilder<QuerySnapshot>(
             stream: controller.getStream(),
             builder:
@@ -53,12 +57,19 @@ class HomeScreen extends GetView<HomeController> {
                   );
                 } else {
                   // Jika pengguna telah memulai pencarian dan pencarian menghasilkan hasil, tampilkan hasil pencarian.
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: controller.searchResults.length,
-                    itemBuilder: (context, index) => ListTile(
-                      title: UnderlineText(
-                        text: controller.searchResults[index],
+                  return Container(
+                    padding: EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: controller.searchResults.length,
+                      itemBuilder: (context, index) => ListTile(
+                        title: UnderlineText(
+                          text: controller.searchResults[index],
+                        ),
                       ),
                     ),
                   );

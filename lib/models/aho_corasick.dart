@@ -1,10 +1,10 @@
-///menghapus karakter _
 /// Representasi simpul dalam Trie
 class TrieNode {
   /// Anak dari simpul Trie ini, dipetakan berdasarkan karakter mereka
   Map<String, TrieNode> child = {};
 
   /// Link ke simpul lain dalam Trie yang mewakili akhiran terpanjang dari string yang diasosiasikan dengan simpul ini
+  /// Ini mewakili fungsi kegagalan (failure function) dalam algoritma Aho-Corasick
   TrieNode? suffixLink;
 
   /// Link ke simpul lain dalam Trie yang mewakili akhiran terpanjang dari string yang diasosiasikan dengan simpul ini, dan juga merupakan akhir dari beberapa pola
@@ -12,6 +12,28 @@ class TrieNode {
 
   /// Indeks pola yang diasosiasikan dengan simpul ini (jika ada)
   int patternInd = -1;
+
+  // Menambahkan metode untuk mendapatkan semua kata dalam trie yang dimulai dengan prefix tertentu
+  void getWordsWithPrefix(String prefix, List<String> results) {
+    var node = this;
+    for (int i = 0; i < prefix.length; i++) {
+      if (!node.child.containsKey(prefix[i])) {
+        return;
+      }
+      node = node.child[prefix[i]]!;
+    }
+    node.getWordsWithPrefixHelper(prefix, results);
+  }
+
+  // Membantu getWordsWithPrefix dengan melakukan traversal ke semua anak simpul
+  void getWordsWithPrefixHelper(String prefix, List<String> results) {
+    if (patternInd != -1) {
+      results.add(prefix);
+    }
+    for (var entry in child.entries) {
+      child[entry.key]!.getWordsWithPrefixHelper(prefix + entry.key, results);
+    }
+  }
 }
 
 /// Implementasi algoritma Aho-Corasick
@@ -19,7 +41,8 @@ class AhoCorasick {
   /// Akar dari Trie
   TrieNode root = TrieNode();
 
-  /// Membangun Trie dari daftar pola
+  /// Membangun Trie dari daftar pola (Step 1)
+  /// Sebenarnya juga mewakili pembuatan tabel transisi automata (Step 2)
   void buildTrie(List<String> patterns) {
     for (int i = 0; i < patterns.length; i++) {
       TrieNode cur = root;
@@ -37,6 +60,7 @@ class AhoCorasick {
   }
 
   /// Membangun link akhiran dan keluaran untuk setiap simpul dalam Trie
+  /// Ini mewakili memeriksa dan membuat fungsi kegagalan (failure function) (Step 3 dan 4)
   void buildSuffixAndOutputLinks() {
     root.suffixLink = root;
 
@@ -71,6 +95,7 @@ class AhoCorasick {
   }
 
   /// Mencari pola dalam teks dan memperbarui daftar indeks dengan posisi di mana setiap pola ditemukan
+  /// Ini merupakan aplikasi dari algoritma Aho-Corasick dengan menggunakan tabel transisi dan fungsi kegagalan yang telah dibuat
   void searchPattern(String text, List<List<int>> indices) {
     TrieNode parent = root;
 
@@ -79,7 +104,6 @@ class AhoCorasick {
       if (char == '_') continue; // skip underscore
       if (parent.child.containsKey(char)) {
         parent = parent.child[char]!;
-
         if (parent.patternInd >= 0) {
           indices[parent.patternInd].add(i);
         }
@@ -99,5 +123,12 @@ class AhoCorasick {
         }
       }
     }
+  }
+
+  // Menambahkan metode untuk mendapatkan semua kata dalam trie yang dimulai dengan prefix tertentu
+  List<String> getWordsWithPrefix(String prefix) {
+    List<String> results = [];
+    root.getWordsWithPrefix(prefix, results);
+    return results;
   }
 }
