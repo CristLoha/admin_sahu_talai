@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../infrastructure/theme/theme.dart';
 
 class AppButton extends StatelessWidget {
@@ -16,8 +14,8 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 56.h,
-      width: 283.w,
+      width: 90,
+      height: 46,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
@@ -27,7 +25,7 @@ class AppButton extends StatelessWidget {
           ),
           backgroundColor: shamrockGreen,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(56),
+            borderRadius: BorderRadius.circular(5),
           ),
         ),
         child: Text(

@@ -1,7 +1,7 @@
+import 'package:admin_sahu_talai/infrastructure/theme/theme.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-
+import 'components/table_admin.dart';
 import 'controllers/admin.controller.dart';
 
 class AdminScreen extends GetView<AdminController> {
@@ -9,16 +9,17 @@ class AdminScreen extends GetView<AdminController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Daftar Kerja'),
-        centerTitle: true,
-      ),
-      body: const Center(
-        child: Text(
-          'AdminScreen is working',
-          style: TextStyle(fontSize: 20),
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: shamrockGreen,
+          title: const Text('Daftar Kerja'),
+          centerTitle: true,
         ),
-      ),
-    );
+        body: ListView(
+          padding: const EdgeInsets.all(24),
+          children: [
+            TableAdmin(),
+          ],
+        ));
   }
 }
