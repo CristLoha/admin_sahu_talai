@@ -1,12 +1,11 @@
 import 'package:admin_sahu_talai/presentation/home/controllers/home.controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../infrastructure/theme/theme.dart';
 
 class AppDropDownHome extends StatelessWidget {
   AppDropDownHome({Key? key}) : super(key: key);
-  final HomeController c = Get.put(HomeController());
+  final HomeController c = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,9 @@ class AppDropDownHome extends StatelessWidget {
               elevation: 16,
               style: const TextStyle(color: darkBlue),
               underline: const SizedBox.shrink(),
-              onChanged: c.onOptionChanged,
+              onChanged: (newValue) {
+                c.updateCategory(newValue!);
+              },
               items: c.options.map((String option) {
                 return DropdownMenuItem<String>(
                   value: option,

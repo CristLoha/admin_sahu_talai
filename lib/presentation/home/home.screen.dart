@@ -107,7 +107,7 @@ class HomeScreen extends GetView<HomeController> {
               AppDropDownHome(),
               30.heightBox,
               StreamBuilder<QuerySnapshot>(
-                stream: controller.getStream(),
+                stream: controller.stream.value,
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
@@ -119,57 +119,118 @@ class HomeScreen extends GetView<HomeController> {
                   }
 
                   return Obx(() {
-                    if (controller.searchResults.isEmpty ||
-                        controller.searchResults.last == "Data tidak cocok") {
-                      return ListView(
-                        shrinkWrap: true,
-                        children: snapshot.data!.docs
-                            .map((DocumentSnapshot document) {
-                          Map<String, dynamic> data =
-                              document.data()! as Map<String, dynamic>;
-                          return Card(
-                            elevation: 4.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: ListTile(
-                              title: UnderlineText(
-                                text: data['kataSahu'],
-                              ),
-                              subtitle:
-                                  UnderlineText(text: data['kataIndonesia']),
-                              trailing: const Icon(Icons
-                                  .arrow_forward_ios), // Tambahkan ikon di akhir
-                            ),
-                          );
-                        }).toList(),
-                      );
-                    } else {
-                      return Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: ListView.builder(
+                    if (controller.selectedOption.value == 'Semua') {
+                      if (controller.searchResults.isEmpty ||
+                          controller.searchResults.last == "Data tidak cocok") {
+                        return ListView(
                           shrinkWrap: true,
-                          itemCount: controller.searchResults.length,
-                          itemBuilder: (context, index) => Card(
-                            elevation: 4.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: ListTile(
-                              leading: const Icon(
-                                  Icons.search), // Tambahkan ikon di awal
-
-                              title: UnderlineText(
-                                text: controller.searchResults[index],
+                          children: snapshot.data!.docs
+                              .map((DocumentSnapshot document) {
+                            Map<String, dynamic> data =
+                                document.data()! as Map<String, dynamic>;
+                            return Card(
+                              elevation: 4.0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
                               ),
-                              trailing: const Icon(Icons
-                                  .arrow_forward_ios), // Tambahkan ikon di akhir
+                              child: ListTile(
+                                title: UnderlineText(
+                                  text: data['kataSahu'],
+                                ),
+                                subtitle:
+                                    UnderlineText(text: data['kataIndonesia']),
+                                trailing: const Icon(Icons
+                                    .arrow_forward_ios), // Tambahkan ikon di akhir
+                              ),
+                            );
+                          }).toList(),
+                        );
+                      } else {
+                        return Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: controller.searchResults.length,
+                            itemBuilder: (context, index) => Card(
+                              elevation: 4.0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: ListTile(
+                                leading: const Icon(
+                                    Icons.search), // Tambahkan ikon di awal
+
+                                title: UnderlineText(
+                                  text: controller.searchResults[index],
+                                ),
+                                trailing: const Icon(Icons
+                                    .arrow_forward_ios), // Tambahkan ikon di akhir
+                              ),
                             ),
                           ),
-                        ),
-                      );
+                        );
+                      }
+                    } else {
+                      if (controller.filteredResults.isEmpty ||
+                          controller.filteredResults.last ==
+                              "Data tidak cocok") {
+                        return ListView(
+                          shrinkWrap: true,
+                          children: snapshot.data!.docs
+                              .map((DocumentSnapshot document) {
+                            Map<String, dynamic> data =
+                                document.data()! as Map<String, dynamic>;
+                            if (data['kategori'] ==
+                                controller.selectedOption.value) {
+                              return Card(
+                                elevation: 4.0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child: ListTile(
+                                  title: UnderlineText(
+                                    text: data['kataSahu'],
+                                  ),
+                                  subtitle: UnderlineText(
+                                      text: data['kataIndonesia']),
+                                  trailing: const Icon(Icons
+                                      .arrow_forward_ios), // Tambahkan ikon di akhir
+                                ),
+                              );
+                            } else {
+                              return SizedBox(); // Tidak menampilkan data yang tidak sesuai kategori
+                            }
+                          }).toList(),
+                        );
+                      } else {
+                        return Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: controller.filteredResults.length,
+                            itemBuilder: (context, index) => Card(
+                              elevation: 4.0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: ListTile(
+                                leading: const Icon(
+                                    Icons.search), // Tambahkan ikon di awal
+
+                                title: UnderlineText(
+                                  text: controller.filteredResults[index],
+                                ),
+                                trailing: const Icon(Icons
+                                    .arrow_forward_ios), // Tambahkan ikon di akhir
+                              ),
+                            ),
+                          ),
+                        );
+                      }
                     }
                   });
                 },
