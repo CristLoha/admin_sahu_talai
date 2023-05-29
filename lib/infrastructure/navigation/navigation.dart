@@ -42,7 +42,7 @@ class Nav {
       binding: AdminControllerBinding(),
     ),
     GetPage(
-      name: Routes.add_words,
+      name: Routes.addwords,
       page: () => const AddWordsScreen(),
       binding: AddWordsControllerBinding(),
     ),

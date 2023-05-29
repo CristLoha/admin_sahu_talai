@@ -13,7 +13,7 @@ class AdminScreen extends GetView<AdminController> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: shamrockGreen,
-        title: const Text('Daftar Kerja'),
+        title: const Text('Daftar Kata'),
         centerTitle: true,
       ),
       body: ListView(
@@ -23,7 +23,7 @@ class AdminScreen extends GetView<AdminController> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Get.toNamed(Routes.add_words),
+        onPressed: () => Get.toNamed(Routes.addwords),
         backgroundColor: vividYellow,
         child: const Icon(Icons.add),
       ),

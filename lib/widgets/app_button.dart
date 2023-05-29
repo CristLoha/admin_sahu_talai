@@ -3,19 +3,23 @@ import '../infrastructure/theme/theme.dart';
 
 class AppButton extends StatelessWidget {
   final String text;
+  final double width;
+  final double height;
   final Function()? onPressed;
 
   const AppButton({
     super.key,
     required this.text,
+    required this.width,
+    required this.height,
     required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 90,
-      height: 46,
+      width: width,
+      height: height,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(

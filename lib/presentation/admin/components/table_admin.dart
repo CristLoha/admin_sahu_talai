@@ -43,7 +43,9 @@ class TableAdmin extends StatelessWidget {
                 ),
                 12.widthBox,
                 AppButton(
-                    text: 'Cari',
+                    width: 90,
+                    height: 46,
+                    text: 'CARI',
                     onPressed: () {
                       adminController.search();
                     }),

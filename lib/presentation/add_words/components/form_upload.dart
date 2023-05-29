@@ -86,7 +86,9 @@ class FormUploadAdd extends StatelessWidget {
           ),
           30.heightBox,
           AppButton(
-            text: 'Kirim',
+            width: 283,
+            height: 56,
+            text: 'SIMPAN',
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 if (controller.selectedOption.isEmpty) {

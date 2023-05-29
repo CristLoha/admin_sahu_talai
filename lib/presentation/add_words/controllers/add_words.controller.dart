@@ -27,15 +27,15 @@ class AddWordsController extends GetxController {
 
   RxString selectedOption = ''.obs;
   List<String> options = [
-    'Hewan',
     'Benda',
     'Kerja',
+    'Sifat',
+    'Depan',
     'Tumbuhan',
     'Tempat',
     'Angka',
-    'Anggota Tubuh',
-    'Sifat',
-    'Depan',
+    'Tempat/Lokasi',
+    'Panggilan'
   ];
 
   TextEditingController kSahu = TextEditingController();
