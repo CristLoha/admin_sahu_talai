@@ -7,6 +7,7 @@ import 'package:admin_sahu_talai/presentation/admin/controllers/admin.controller
 
 import '../../../widgets/app_button.dart';
 import '../../../widgets/text_field_widget.dart';
+import '../../../widgets/text_underline.dart';
 
 class TableAdmin extends StatelessWidget {
   final AdminController adminController = Get.put(AdminController());
@@ -68,9 +69,9 @@ class TableAdmin extends StatelessWidget {
 
               return Text(
                 "Total kata: ${results.length}",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold, // Make it bold
-                  fontSize: 20, // Increase the font size
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
                 ),
               );
             }),
@@ -103,21 +104,10 @@ class TableAdmin extends StatelessWidget {
                             .primary
                             .withOpacity(40);
                       }
-                      return darkGray; // Use any color of your choice here
+                      return darkGray;
                     },
                   ),
-                  dataRowColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.selected)) {
-                        return Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.08);
-                      }
-                      return Colors.white; // Use any color of your choice here
-                    },
-                  ),
-                  columnSpacing: 10, // Add some column spacing
+                  columnSpacing: 10,
                   columns: const <DataColumn>[
                     DataColumn(
                         label: Text('ID_KATA',
@@ -150,12 +140,16 @@ class TableAdmin extends StatelessWidget {
                             : document.id)),
                         DataCell(Text(data['kategori'] ?? 'N/A')),
                         DataCell(Text(data['kataIndonesia'] ?? 'N/A')),
-                        DataCell(Text(data['kataSahu'] ?? 'N/A')),
+                        DataCell(
+                          UnderlineText(
+                            text: data['kataSahu'] ?? 'N/A',
+                          ),
+                        ),
                         DataCell(
                           Row(
                             children: <Widget>[
                               IconButton(
-                                icon: Icon(Icons.info),
+                                icon: const Icon(Icons.info),
                                 onPressed: () {
                                   // Do something for details
                                 },
@@ -167,10 +161,12 @@ class TableAdmin extends StatelessWidget {
                                 },
                               ),
                               IconButton(
-                                icon: Icon(Icons.delete),
-                                onPressed: () {
-                                  // Do something for delete
-                                },
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: red,
+                                ),
+                                onPressed: () =>
+                                    adminController.deleteHewan(document.id),
                               ),
                             ],
                           ),

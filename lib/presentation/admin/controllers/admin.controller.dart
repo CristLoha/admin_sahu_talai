@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../infrastructure/theme/theme.dart';
 import '../../../models/aho_corasick.dart';
 
 class AdminController extends GetxController {
@@ -103,5 +104,57 @@ class AdminController extends GetxController {
         'Aho-Corasick matching executed in ${stopwatch.elapsedMilliseconds} ms');
     print(
         'Aho-Corasick matching executed in ${stopwatch.elapsedMilliseconds / 1000} seconds');
+  }
+
+  Future<void> deleteHewan(String id) async {
+    DocumentReference docRef = kamus.doc(id);
+
+    // Tampilkan dialog konfirmasi sebelum menghapus item
+    var confirmed = await Get.dialog<bool>(
+      AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Text(
+          'Konfirmasi',
+          style: darkBlueTextStyle.copyWith(fontWeight: bold),
+        ),
+        content: Text(
+          'Apakah Anda yakin ingin menghapus item ini?',
+          style: darkBlueTextStyle.copyWith(fontSize: 15),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back(result: false);
+            },
+            child: Text(
+              'Tidak',
+              style: darkBlueTextStyle,
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back(result: true);
+            },
+            child: Text(
+              'Ya',
+              style: oldRoseTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed ?? false) {
+      try {
+        await docRef.delete();
+        Get.snackbar('Berhasil', 'Item telah dihapus',
+            snackPosition: SnackPosition.BOTTOM);
+      } catch (e) {
+        Get.snackbar('Error', 'Terjadi kesalahan saat menghapus item',
+            snackPosition: SnackPosition.BOTTOM);
+      }
+    }
   }
 }
