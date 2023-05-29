@@ -1,3 +1,4 @@
+import 'package:admin_sahu_talai/infrastructure/navigation/routes.dart';
 import 'package:admin_sahu_talai/infrastructure/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,7 +23,7 @@ class AdminScreen extends GetView<AdminController> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => Get.toNamed(Routes.add_words),
         backgroundColor: vividYellow,
         child: const Icon(Icons.add),
       ),

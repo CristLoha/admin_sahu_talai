@@ -3,7 +3,8 @@ class Routes {
     return admin;
   }
 
+  static const admin = '/admin';
   static const home = '/home';
   static const login = '/login';
-  static const admin = '/admin';
+  static const add_words = '/add-words';
 }

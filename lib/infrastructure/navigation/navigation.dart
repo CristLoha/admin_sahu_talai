@@ -41,5 +41,10 @@ class Nav {
       page: () => const AdminScreen(),
       binding: AdminControllerBinding(),
     ),
+    GetPage(
+      name: Routes.add_words,
+      page: () => const AddWordsScreen(),
+      binding: AddWordsControllerBinding(),
+    ),
   ];
 }
