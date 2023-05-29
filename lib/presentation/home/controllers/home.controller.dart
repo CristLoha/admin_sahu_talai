@@ -12,47 +12,38 @@ class HomeController extends GetxController {
     selectedDirection.value = direction;
   }
 
-  final TextEditingController searchController = TextEditingController();
+  final TextEditingController searchController =
+      TextEditingController(); // Tambahkan ini
   final CollectionReference kamus =
       FirebaseFirestore.instance.collection('kamus');
   final AhoCorasick ahoCorasick = AhoCorasick();
-  final Map<String, String> patterns = {};
+  final Map<String, String> patterns = {}; // Ubah ini
   final RxList<String> searchResults = RxList<String>();
 
   Stream<QuerySnapshot> getStream() {
-    if (selectedOption.value == 'Tampilkan Semua') {
-      return kamus.snapshots();
-    } else {
-      return kamus
-          .where('kategori', isEqualTo: selectedOption.value)
-          .snapshots();
-    }
+    return kamus.snapshots();
   }
 
   @override
   void onInit() {
     super.onInit();
-    ever(selectedOption, (_) => loadPatterns());
+    loadPatterns();
   }
 
   Future<void> loadPatterns() async {
-    final snapshot = await getStream().first;
-    if (snapshot.docs.isEmpty) {
-      Get.snackbar('Informasi', 'Tidak ada data untuk kategori ini');
-    } else {
-      patterns.clear();
-      for (var doc in snapshot.docs) {
-        String originalPattern = doc.get('kataSahu');
-        String searchPattern = originalPattern.replaceAll('_', '');
-        patterns[searchPattern] = originalPattern;
-      }
-      ahoCorasick.buildTrie(patterns.keys.toList());
-      ahoCorasick.buildSuffixAndOutputLinks();
+    final snapshot = await kamus.get();
+    for (var doc in snapshot.docs) {
+      String originalPattern = doc.get('kataSahu');
+      String searchPattern = originalPattern.replaceAll('_', '');
+      patterns[searchPattern] = originalPattern;
     }
+    ahoCorasick.buildTrie(patterns.keys.toList());
+    ahoCorasick.buildSuffixAndOutputLinks();
   }
 
   void search() {
-    String query = searchController.text.replaceAll('_', '');
+    String query =
+        searchController.text.replaceAll('_', ''); // no longer redefining query
     List<String> tokens = query.split(' ');
     query.replaceAllMapped(RegExp(r'_\w'), (m) => '${m.group(0)![1]}̲');
     Stopwatch stopwatch = Stopwatch()..start();
@@ -60,16 +51,24 @@ class HomeController extends GetxController {
     searchResults.clear();
     bool dataFound = false;
 
+    // Melakukan pencarian untuk setiap token
     for (String token in tokens) {
       final indices = List.generate(patterns.length, (_) => <int>[]);
-      ahoCorasick.searchPattern(token, indices);
+      ahoCorasick.searchPattern(
+          token, indices); // Melakukan pencarian untuk token ini
 
       for (int i = 0; i < patterns.length; i++) {
         if (indices[i].isNotEmpty) {
           String originalPattern = patterns.values.elementAt(i);
           if (!searchResults.contains(originalPattern)) {
+            // Tambahkan pemeriksaan ini untuk menghindari duplikat
             searchResults.add(originalPattern);
             dataFound = true;
+
+            print('Kata "$originalPattern" ditemukan pada kata "$token"!');
+            print('Total kemunculan "$originalPattern": ${indices[i].length}');
+            print('Posisi kemunculan ke-${i + 1}: ${indices[i].join(', ')}');
+            print('----');
           }
         }
       }
@@ -77,15 +76,29 @@ class HomeController extends GetxController {
 
     stopwatch.stop();
 
-    if (!dataFound) {
+    if (dataFound) {
+      // Get.snackbar(
+      //   'Hasil Pencarian',
+      //   'Kata ditemukan dalam ${stopwatch.elapsed.inMilliseconds} ms',
+      // );
+    } else {
+      searchResults.clear();
       searchResults.add("Data tidak cocok");
-      Get.snackbar('Hasil Pencarian', 'Kata tidak ditemukan');
+      print('Data tidak cocok');
+      Get.snackbar(
+        'Hasil Pencarian',
+        'Kata tidak ditemukan',
+      );
     }
+
+    print(
+        'Aho-Corasick matching executed in ${stopwatch.elapsedMilliseconds} ms');
+    print(
+        'Aho-Corasick matching executed in ${stopwatch.elapsedMilliseconds / 1000} seconds');
   }
 
-  RxString selectedOption = 'Tampilkan Semua'.obs;
+  RxString selectedOption = ''.obs;
   List<String> options = [
-    'Tampilkan Semua',
     'Benda',
     'Kerja',
     'Sifat',
@@ -100,9 +113,8 @@ class HomeController extends GetxController {
   void onOptionChanged(String? newValue) {
     if (newValue != null) {
       selectedOption.value = newValue;
-      errorText.value = '';
-      loadPatterns();
-      search();
+      errorText.value =
+          ''; // Menghilangkan pesan kesalahan saat kategori dipilih
     } else {
       errorText.value = 'Pilih salah satu opsi';
     }
