@@ -9,17 +9,23 @@ class AdminScreen extends GetView<AdminController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: shamrockGreen,
-          title: const Text('Daftar Kerja'),
-          centerTitle: true,
-        ),
-        body: ListView(
-          padding: const EdgeInsets.all(24),
-          children: [
-            TableAdmin(),
-          ],
-        ));
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: shamrockGreen,
+        title: const Text('Daftar Kerja'),
+        centerTitle: true,
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(24),
+        children: [
+          TableAdmin(),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: vividYellow,
+        child: const Icon(Icons.add),
+      ),
+    );
   }
 }

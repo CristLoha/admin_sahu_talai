@@ -26,7 +26,7 @@ class TableAdmin extends StatelessWidget {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Text('Memuat..');
+          return const Center(child: Text('Memuat..'));
         }
 
         final documents = snapshot.data!.docs;
