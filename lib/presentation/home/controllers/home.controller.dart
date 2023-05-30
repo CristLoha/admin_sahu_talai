@@ -51,18 +51,21 @@ class HomeController extends GetxController {
       snapshot =
           await kamus.where('kategori', isEqualTo: selectedOption.value).get();
     }
+
+    patterns.clear();
+
     for (var doc in snapshot.docs) {
       String originalPattern = doc.get('kataSahu');
       String searchPattern = originalPattern.replaceAll('_', '');
       patterns[searchPattern] = originalPattern;
     }
+
     ahoCorasick.buildTrie(patterns.keys.toList());
     ahoCorasick.buildSuffixAndOutputLinks();
   }
 
   void search() {
-    String query =
-        searchController.text.replaceAll('_', ''); // no longer redefining query
+    String query = searchController.text.replaceAll('_', '');
     List<String> tokens = query.split(' ');
     query = query.replaceAllMapped(RegExp(r'_\w'), (m) => '${m.group(0)![1]}̲');
     Stopwatch stopwatch = Stopwatch()..start();
@@ -70,41 +73,20 @@ class HomeController extends GetxController {
     searchResults.clear();
     bool dataFound = false;
 
-    if (selectedOption.value == 'Semua') {
-      for (String token in tokens) {
-        final indices = List.generate(patterns.length, (_) => <int>[]);
-        ahoCorasick.searchPattern(token, indices);
-
-        for (int i = 0; i < patterns.length; i++) {
-          if (indices[i].isNotEmpty) {
-            String originalPattern = patterns.values.elementAt(i);
-            if (!searchResults.contains(originalPattern)) {
-              searchResults.add(originalPattern);
-              dataFound = true;
-
-              print('Kata "$originalPattern" ditemukan pada kata "$token"!');
-              print(
-                  'Total kemunculan "$originalPattern": ${indices[i].length}');
-              print('Posisi kemunculan ke-${i + 1}: ${indices[i].join(', ')}');
-              print('----');
-            }
-          }
-        }
-      }
-    } else {
+    for (String token in tokens) {
       final indices = List.generate(patterns.length, (_) => <int>[]);
-      for (String token in tokens) {
-        ahoCorasick.searchPattern(token, indices);
-      }
+      ahoCorasick.searchPattern(token, indices);
 
       for (int i = 0; i < patterns.length; i++) {
         if (indices[i].isNotEmpty) {
           String originalPattern = patterns.values.elementAt(i);
           if (!searchResults.contains(originalPattern)) {
+            // TODO: Tambahkan logika filter berdasarkan kategori di sini
+            // ...
             searchResults.add(originalPattern);
             dataFound = true;
 
-            print('Kata "$originalPattern" ditemukan!');
+            print('Kata "$originalPattern" ditemukan pada kata "$token"!');
             print('Total kemunculan "$originalPattern": ${indices[i].length}');
             print('Posisi kemunculan ke-${i + 1}: ${indices[i].join(', ')}');
             print('----');
@@ -117,18 +99,26 @@ class HomeController extends GetxController {
 
     if (!dataFound && searchController.text.isNotEmpty) {
       searchResults.clear();
+      filteredResults.clear();
       searchResults.add("Data tidak cocok");
+      filteredResults.add("Data tidak cocok");
       print('Data tidak cocok');
       Get.snackbar(
         'Hasil Pencarian',
         'Kata tidak ditemukan',
       );
+    } else {
+      // Hasil pencarian ditemukan, perbarui nilai searchResults dan filteredResults
+      filteredResults = RxList<String>.from(searchResults);
+      update();
     }
 
     print(
-        'Aho-Corasick matching executed in ${stopwatch.elapsedMilliseconds} ms');
+      'Aho-Corasick matching executed in ${stopwatch.elapsedMilliseconds} ms',
+    );
     print(
-        'Aho-Corasick matching executed in ${stopwatch.elapsedMilliseconds / 1000} seconds');
+      'Aho-Corasick matching executed in ${stopwatch.elapsedMilliseconds / 1000} seconds',
+    );
   }
 
   List<String> options = [
@@ -143,15 +133,20 @@ class HomeController extends GetxController {
     'Tempat/Lokasi',
     'Panggilan'
   ];
+
   void updateCategory(String category) {
     selectedOption.value = category;
+    stream.value = getStream();
     if (selectedOption.value != 'Semua') {
       loadPatterns().then((_) {
-        search(); // Memulai pencarian ulang setelah memuat pola baru
+        search();
+        filteredResults = RxList<String>.from(searchResults); // Tambahkan ini
+        update(); // Memperbarui UI
       });
     } else {
-      searchResults
-          .clear(); // Menghapus hasil pencarian jika kategori "Semua" dipilih
+      searchResults.clear();
+      filteredResults.clear();
+      update(); // Memperbarui UI
     }
   }
 

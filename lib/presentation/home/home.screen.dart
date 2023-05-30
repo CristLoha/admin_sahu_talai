@@ -1,3 +1,4 @@
+import 'package:admin_sahu_talai/infrastructure/navigation/routes.dart';
 import 'package:admin_sahu_talai/presentation/home/components/dropdown_home.dart';
 import 'package:admin_sahu_talai/utils/extension/box_extension.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class HomeScreen extends GetView<HomeController> {
         actions: <Widget>[
           TextButton(
             onPressed: () {
-              // Tambahkan fungsi saat button di klik
+              Get.toNamed(Routes.admin);
             },
             child: const Text(
               "Login",
@@ -50,12 +51,13 @@ class HomeScreen extends GetView<HomeController> {
                   ),
                   12.widthBox,
                   AppButton(
-                      width: 90,
-                      height: 46,
-                      text: 'CARI',
-                      onPressed: () {
-                        controller.search();
-                      }),
+                    width: 90,
+                    height: 46,
+                    text: 'CARI',
+                    onPressed: () {
+                      controller.search();
+                    },
+                  ),
                 ],
               ),
               10.heightBox,
@@ -76,7 +78,9 @@ class HomeScreen extends GetView<HomeController> {
                             Text(
                               'IND-SAHU',
                               style: darkBlueTextStyle.copyWith(
-                                  fontSize: 15, fontWeight: semiBold),
+                                fontSize: 15,
+                                fontWeight: semiBold,
+                              ),
                             ),
                           ],
                         )),
@@ -94,7 +98,9 @@ class HomeScreen extends GetView<HomeController> {
                             Text(
                               'SAHU-IND',
                               style: darkBlueTextStyle.copyWith(
-                                  fontSize: 15, fontWeight: semiBold),
+                                fontSize: 15,
+                                fontWeight: semiBold,
+                              ),
                             ),
                           ],
                         )),
@@ -183,7 +189,8 @@ class HomeScreen extends GetView<HomeController> {
                             Map<String, dynamic> data =
                                 document.data()! as Map<String, dynamic>;
                             if (data['kategori'] ==
-                                controller.selectedOption.value) {
+                                    controller.selectedOption.value ||
+                                controller.selectedOption.value == 'Semua') {
                               return Card(
                                 elevation: 4.0,
                                 shape: RoundedRectangleBorder(
@@ -200,7 +207,7 @@ class HomeScreen extends GetView<HomeController> {
                                 ),
                               );
                             } else {
-                              return SizedBox(); // Tidak menampilkan data yang tidak sesuai kategori
+                              return SizedBox();
                             }
                           }).toList(),
                         );
@@ -212,22 +219,22 @@ class HomeScreen extends GetView<HomeController> {
                           child: ListView.builder(
                             shrinkWrap: true,
                             itemCount: controller.filteredResults.length,
-                            itemBuilder: (context, index) => Card(
-                              elevation: 4.0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: ListTile(
-                                leading: const Icon(
-                                    Icons.search), // Tambahkan ikon di awal
-
-                                title: UnderlineText(
-                                  text: controller.filteredResults[index],
+                            itemBuilder: (context, index) {
+                              String result = controller.filteredResults[index];
+                              return Card(
+                                elevation: 4.0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
                                 ),
-                                trailing: const Icon(Icons
-                                    .arrow_forward_ios), // Tambahkan ikon di akhir
-                              ),
-                            ),
+                                child: ListTile(
+                                  leading: const Icon(Icons.search),
+                                  title: UnderlineText(
+                                    text: result,
+                                  ),
+                                  trailing: const Icon(Icons.arrow_forward_ios),
+                                ),
+                              );
+                            },
                           ),
                         );
                       }
