@@ -26,10 +26,13 @@ class HomeScreen extends GetView<HomeController> {
             onPressed: () {
               Get.toNamed(Routes.admin);
             },
-            child: const Text(
-              "Login",
-              style: TextStyle(
-                color: Colors.white, // Atur warna teks sesuai kebutuhan
+            child: TextButton(
+              onPressed: () => Get.toNamed(Routes.login),
+              child: Text(
+                "Login",
+                style: TextStyle(
+                  color: Colors.white, // Atur warna teks sesuai kebutuhan
+                ),
               ),
             ),
           ),

@@ -15,6 +15,12 @@ class AdminScreen extends GetView<AdminController> {
         backgroundColor: shamrockGreen,
         title: const Text('Daftar Kata'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => controller.logout(),
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(24),

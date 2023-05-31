@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../infrastructure/theme/theme.dart';
 
@@ -13,7 +12,7 @@ class TittleAppBar extends StatelessWidget {
       title,
       textAlign: TextAlign.center,
       style: whiteTextStyle.copyWith(
-        fontSize: 20.sp,
+        fontSize: 20,
         fontWeight: semiBold,
       ),
     );

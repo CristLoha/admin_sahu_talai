@@ -11,11 +11,15 @@ dependencies:
   firebase_core: 2.13.0
   cloud_firestore: 4.5.1
   firebase_storage: 11.2.1
-  flutter_screenutil: 5.8.2
   google_fonts: 4.0.4
   eva_icons_flutter: 3.1.0
   connectivity_plus: 4.0.1
   file_picker: 5.2.11
+  firebase_auth: 4.6.1
+  awesome_dialog: 3.1.0
+  fluttericon: 2.0.0
+  flutter_easyloading: 3.0.5
+  
   flutter: 
     sdk: flutter
 
