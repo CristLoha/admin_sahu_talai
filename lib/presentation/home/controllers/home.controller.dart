@@ -8,23 +8,24 @@ enum LanguageDirection { indSahu, sahuInd }
 class HomeController extends GetxController {
   Rx<LanguageDirection> selectedDirection = LanguageDirection.indSahu.obs;
   var errorText = ''.obs;
+
   void setDirection(LanguageDirection direction) {
     selectedDirection.value = direction;
+    loadPatterns(); // Memanggil loadPatterns setelah merubah arah
   }
 
   RxList<String> filteredResults = RxList<String>();
-
   RxString selectedOption = 'Semua'.obs;
 
-  final TextEditingController searchController =
-      TextEditingController(); // Tambahkan ini
+  final TextEditingController searchController = TextEditingController();
   final CollectionReference kamus =
       FirebaseFirestore.instance.collection('kamus');
   final AhoCorasick ahoCorasick = AhoCorasick();
-  final Map<String, String> patterns = {}; // Ubah ini
+  final Map<String, String> patterns = {};
   final RxList<String> searchResults = RxList<String>();
 
   Rx<Stream<QuerySnapshot>> stream = const Stream<QuerySnapshot>.empty().obs;
+
   Stream<QuerySnapshot> getStream() {
     if (selectedOption.value == 'Semua') {
       return kamus.snapshots();
@@ -42,6 +43,8 @@ class HomeController extends GetxController {
     loadPatterns();
   }
 
+  final Map<String, String> categories = {};
+
   Future<void> loadPatterns() async {
     QuerySnapshot snapshot;
 
@@ -53,11 +56,16 @@ class HomeController extends GetxController {
     }
 
     patterns.clear();
+    categories.clear();
 
     for (var doc in snapshot.docs) {
-      String originalPattern = doc.get('kataSahu');
+      String originalPattern =
+          selectedDirection.value == LanguageDirection.indSahu
+              ? doc.get('kataIndonesia')
+              : doc.get('kataSahu');
       String searchPattern = originalPattern.replaceAll('_', '');
       patterns[searchPattern] = originalPattern;
+      categories[originalPattern] = doc.get('kategori');
     }
 
     ahoCorasick.buildTrie(patterns.keys.toList());
@@ -81,15 +89,17 @@ class HomeController extends GetxController {
         if (indices[i].isNotEmpty) {
           String originalPattern = patterns.values.elementAt(i);
           if (!searchResults.contains(originalPattern)) {
-            // TODO: Tambahkan logika filter berdasarkan kategori di sini
-            // ...
-            searchResults.add(originalPattern);
-            dataFound = true;
+            if (selectedOption.value == 'Semua' ||
+                selectedOption.value == categories[originalPattern]) {
+              searchResults.add(originalPattern);
+              dataFound = true;
 
-            print('Kata "$originalPattern" ditemukan pada kata "$token"!');
-            print('Total kemunculan "$originalPattern": ${indices[i].length}');
-            print('Posisi kemunculan ke-${i + 1}: ${indices[i].join(', ')}');
-            print('----');
+              print('Kata "$originalPattern" ditemukan pada kata "$token"!');
+              print(
+                  'Total kemunculan "$originalPattern": ${indices[i].length}');
+              print('Posisi kemunculan ke-${i + 1}: ${indices[i].join(', ')}');
+              print('----');
+            }
           }
         }
       }
@@ -102,16 +112,22 @@ class HomeController extends GetxController {
       filteredResults.clear();
       searchResults.add("Data tidak cocok");
       filteredResults.add("Data tidak cocok");
-      print('Data tidak cocok');
       Get.snackbar(
         'Hasil Pencarian',
         'Kata tidak ditemukan',
       );
+
+      // Menampilkan pesan kategori tidak cocok jika ditemukan
+      if (selectedOption.value != 'Semua') {
+        filteredResults.clear();
+        filteredResults
+            .add("Kata tidak cocok dengan kategori '${selectedOption.value}'");
+      }
     } else {
-      // Hasil pencarian ditemukan, perbarui nilai searchResults dan filteredResults
       filteredResults = RxList<String>.from(searchResults);
-      update();
     }
+
+    update(); // Memperbarui tampilan UI
 
     print(
       'Aho-Corasick matching executed in ${stopwatch.elapsedMilliseconds} ms',
@@ -137,24 +153,18 @@ class HomeController extends GetxController {
   void updateCategory(String category) {
     selectedOption.value = category;
     stream.value = getStream();
-    if (selectedOption.value != 'Semua') {
-      loadPatterns().then((_) {
-        search();
-        filteredResults = RxList<String>.from(searchResults); // Tambahkan ini
-        update(); // Memperbarui UI
-      });
-    } else {
-      searchResults.clear();
-      filteredResults.clear();
-      update(); // Memperbarui UI
-    }
+    loadPatterns().then((_) {
+      search();
+      filteredResults = RxList<String>.from(searchResults);
+      update(); // Menambahkan ini untuk memperbarui tampilan UI
+    });
   }
 
   Future<void> onOptionChanged(String? newValue) async {
     if (newValue != null) {
       selectedOption.value = newValue;
       stream.value = getStream();
-      await loadPatterns(); // Menunggu ini selesai
+      await loadPatterns();
       errorText.value = '';
     } else {
       errorText.value = 'Pilih salah satu opsi';

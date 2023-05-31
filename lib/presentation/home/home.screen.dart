@@ -141,10 +141,18 @@ class HomeScreen extends GetView<HomeController> {
                               ),
                               child: ListTile(
                                 title: UnderlineText(
-                                  text: data['kataSahu'],
+                                  text: data[
+                                      controller.selectedDirection.value ==
+                                              LanguageDirection.indSahu
+                                          ? 'kataIndonesia'
+                                          : 'kataSahu'],
                                 ),
-                                subtitle:
-                                    UnderlineText(text: data['kataIndonesia']),
+                                subtitle: UnderlineText(
+                                    text: data[
+                                        controller.selectedDirection.value ==
+                                                LanguageDirection.indSahu
+                                            ? 'kataSahu'
+                                            : 'kataIndonesia']),
                                 trailing: const Icon(Icons
                                     .arrow_forward_ios), // Tambahkan ikon di akhir
                               ),
@@ -198,10 +206,18 @@ class HomeScreen extends GetView<HomeController> {
                                 ),
                                 child: ListTile(
                                   title: UnderlineText(
-                                    text: data['kataSahu'],
+                                    text: data[
+                                        controller.selectedDirection.value ==
+                                                LanguageDirection.indSahu
+                                            ? 'kataIndonesia'
+                                            : 'kataSahu'],
                                   ),
                                   subtitle: UnderlineText(
-                                      text: data['kataIndonesia']),
+                                      text: data[
+                                          controller.selectedDirection.value ==
+                                                  LanguageDirection.indSahu
+                                              ? 'kataSahu'
+                                              : 'kataIndonesia']),
                                   trailing: const Icon(Icons
                                       .arrow_forward_ios), // Tambahkan ikon di akhir
                                 ),
