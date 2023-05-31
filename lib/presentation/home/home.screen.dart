@@ -50,7 +50,7 @@ class HomeScreen extends GetView<HomeController> {
                           suffixIcon: controller.isFieldEmpty.value
                               ? null
                               : IconButton(
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.clear,
                                     color: Colors.grey,
                                   ),
@@ -143,10 +143,23 @@ class HomeScreen extends GetView<HomeController> {
                     if (controller.selectedOption.value == 'Semua') {
                       if (controller.searchResults.isEmpty ||
                           controller.searchResults.last == "Data tidak cocok") {
+                        var sortedDocs = snapshot.data!.docs;
+                        sortedDocs.sort((a, b) {
+                          if (controller.selectedDirection.value ==
+                              LanguageDirection.indSahu) {
+                            return a
+                                .get('kataIndonesia')
+                                .compareTo(b.get('kataIndonesia'));
+                          } else {
+                            return a
+                                .get('kataSahu')
+                                .compareTo(b.get('kataSahu'));
+                          }
+                        });
+
                         return ListView(
                           shrinkWrap: true,
-                          children: snapshot.data!.docs
-                              .map((DocumentSnapshot document) {
+                          children: sortedDocs.map((DocumentSnapshot document) {
                             Map<String, dynamic> data =
                                 document.data()! as Map<String, dynamic>;
                             return Card(
