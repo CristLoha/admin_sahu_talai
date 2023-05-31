@@ -45,9 +45,24 @@ class HomeScreen extends GetView<HomeController> {
               Row(
                 children: [
                   Expanded(
-                    child: TextFieldWidget(
-                      controller: controller.searchController,
-                    ),
+                    child: Obx(() => TextFieldWidget(
+                          controller: controller.searchController,
+                          suffixIcon: controller.isFieldEmpty.value
+                              ? null
+                              : IconButton(
+                                  icon: Icon(
+                                    Icons.clear,
+                                    color: Colors.grey,
+                                  ),
+                                  onPressed: () {
+                                    controller.searchController.clear();
+                                    controller.isFieldEmpty.value = true;
+                                    controller.searchResults.clear();
+                                    controller.filteredResults.clear();
+                                    controller.update();
+                                  },
+                                ),
+                        )),
                   ),
                   12.widthBox,
                   AppButton(

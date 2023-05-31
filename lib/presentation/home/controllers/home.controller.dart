@@ -8,6 +8,8 @@ enum LanguageDirection { indSahu, sahuInd }
 class HomeController extends GetxController {
   Rx<LanguageDirection> selectedDirection = LanguageDirection.indSahu.obs;
   var errorText = ''.obs;
+  var isFieldEmpty =
+      true.obs; // Nilai awalnya true, yang berarti TextField kosong.
 
   void setDirection(LanguageDirection direction) {
     selectedDirection.value = direction;
@@ -41,6 +43,10 @@ class HomeController extends GetxController {
     super.onInit();
     stream.value = getStream();
     loadPatterns();
+    searchController.addListener(() {
+      isFieldEmpty.value = searchController.text.isEmpty;
+      print('icon muncul');
+    });
   }
 
   final Map<String, String> categories = {};
