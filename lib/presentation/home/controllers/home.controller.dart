@@ -64,17 +64,7 @@ class HomeController extends GetxController {
     patterns.clear();
     categories.clear();
 
-    List<DocumentSnapshot> docs = snapshot.docs;
-
-    // Sort the documents
-    docs.sort((a, b) => (selectedDirection.value == LanguageDirection.indSahu
-            ? a.get('kataIndonesia')
-            : a.get('kataSahu'))
-        .compareTo(selectedDirection.value == LanguageDirection.indSahu
-            ? b.get('kataIndonesia')
-            : b.get('kataSahu')));
-
-    for (var doc in docs) {
+    for (var doc in snapshot.docs) {
       String originalPattern =
           selectedDirection.value == LanguageDirection.indSahu
               ? doc.get('kataIndonesia')
