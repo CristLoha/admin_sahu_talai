@@ -3,8 +3,9 @@ class Routes {
     return home;
   }
 
+  static const addwords = '/add-words';
   static const admin = '/admin';
   static const home = '/home';
   static const login = '/login';
-  static const addwords = '/add-words';
+  static const detail = '/detail';
 }

@@ -1,10 +1,9 @@
 import 'package:admin_sahu_talai/infrastructure/navigation/routes.dart';
 import 'package:admin_sahu_talai/presentation/home/components/dropdown_home.dart';
-import 'package:admin_sahu_talai/utils/extension/box_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../infrastructure/theme/theme.dart';
+
 import '../../widgets/app_button.dart';
 import '../../widgets/text_field_widget.dart';
 import '../../widgets/text_underline.dart';
@@ -18,21 +17,18 @@ class HomeScreen extends GetView<HomeController> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: shamrockGreen,
+        backgroundColor: Colors.green,
         title: const Text("Kamus Sahu Tala'i"),
         centerTitle: true,
         actions: <Widget>[
           TextButton(
             onPressed: () {
-              Get.toNamed(Routes.admin);
+              Get.toNamed(Routes.login);
             },
-            child: TextButton(
-              onPressed: () => Get.toNamed(Routes.login),
-              child: Text(
-                "Login",
-                style: TextStyle(
-                  color: Colors.white, // Atur warna teks sesuai kebutuhan
-                ),
+            child: Text(
+              "Login",
+              style: TextStyle(
+                color: Colors.white,
               ),
             ),
           ),
@@ -40,257 +36,159 @@ class HomeScreen extends GetView<HomeController> {
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Obx(() => TextFieldWidget(
-                          controller: controller.searchController,
-                          suffixIcon: controller.isFieldEmpty.value
-                              ? null
-                              : IconButton(
-                                  icon: const Icon(
-                                    Icons.clear,
-                                    color: Colors.grey,
-                                  ),
-                                  onPressed: () {
-                                    controller.searchController.clear();
-                                    controller.isFieldEmpty.value = true;
-                                    controller.searchResults.clear();
-                                    controller.filteredResults.clear();
-                                    controller.update();
-                                  },
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Obx(() => TextFieldWidget(
+                        controller: controller.searchController,
+                        suffixIcon: controller.isFieldEmpty.value
+                            ? null
+                            : IconButton(
+                                icon: const Icon(
+                                  Icons.clear,
+                                  color: Colors.grey,
                                 ),
-                        )),
-                  ),
-                  12.widthBox,
-                  AppButton(
-                    width: 90,
-                    height: 46,
-                    text: 'CARI',
-                    onPressed: () {
-                      controller.search();
-                    },
-                  ),
-                ],
-              ),
-              10.heightBox,
-
-              ///RADIO BUTTON
-              Row(
-                children: [
-                  Expanded(
-                    child: Obx(() => Row(
-                          children: [
-                            Radio<LanguageDirection>(
-                              value: LanguageDirection.indSahu,
-                              groupValue: controller.selectedDirection.value,
-                              onChanged: (LanguageDirection? value) {
-                                controller.setDirection(value!);
-                              },
-                            ),
-                            Text(
-                              'IND-SAHU',
-                              style: darkBlueTextStyle.copyWith(
-                                fontSize: 15,
-                                fontWeight: semiBold,
+                                onPressed: () {
+                                  controller.searchController.clear();
+                                  controller.isFieldEmpty.value = true;
+                                  controller.searchResults.clear();
+                                  controller.filteredResults.clear();
+                                  controller.update();
+                                },
                               ),
-                            ),
-                          ],
-                        )),
-                  ),
-                  Expanded(
-                    child: Obx(() => Row(
-                          children: [
-                            Radio<LanguageDirection>(
-                              value: LanguageDirection.sahuInd,
-                              groupValue: controller.selectedDirection.value,
-                              onChanged: (LanguageDirection? value) {
-                                controller.setDirection(value!);
-                              },
-                            ),
-                            Text(
-                              'SAHU-IND',
-                              style: darkBlueTextStyle.copyWith(
-                                fontSize: 15,
-                                fontWeight: semiBold,
-                              ),
-                            ),
-                          ],
-                        )),
-                  ),
-                ],
-              ),
-              10.heightBox,
+                      )),
+                ),
+                const SizedBox(width: 12),
+                AppButton(
+                  width: 90,
+                  height: 46,
+                  text: 'CARI',
+                  onPressed: controller.search,
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: Obx(() => RadioListTile<LanguageDirection>(
+                        title: const Text('IND-SAHU'),
+                        value: LanguageDirection.indSahu,
+                        groupValue: controller.selectedDirection.value,
+                        onChanged: (value) {
+                          controller.setDirection(value!);
+                        },
+                      )),
+                ),
+                Expanded(
+                  child: Obx(() => RadioListTile<LanguageDirection>(
+                        title: const Text('SAHU-IND'),
+                        value: LanguageDirection.sahuInd,
+                        groupValue: controller.selectedDirection.value,
+                        onChanged: (value) {
+                          controller.setDirection(value!);
+                        },
+                      )),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            AppDropDownHome(),
+            const SizedBox(height: 30),
+            StreamBuilder<QuerySnapshot>(
+              stream: controller.stream.value,
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return const Text('Something went wrong');
+                }
 
-              ///KATEGORI
-              AppDropDownHome(),
-              30.heightBox,
-              StreamBuilder<QuerySnapshot>(
-                stream: controller.stream.value,
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.hasError) {
-                    return Text('Something went wrong');
-                  }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Text("Loading");
+                }
 
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Text("Loading");
-                  }
+                return Obx(() {
+                  List<QueryDocumentSnapshot> displayData;
 
-                  return Obx(() {
-                    if (controller.selectedOption.value == 'Semua') {
-                      if (controller.searchResults.isEmpty ||
-                          controller.searchResults.last == "Data tidak cocok") {
-                        var sortedDocs = snapshot.data!.docs;
-                        sortedDocs.sort((a, b) {
-                          if (controller.selectedDirection.value ==
-                              LanguageDirection.indSahu) {
-                            return a
-                                .get('kataIndonesia')
-                                .compareTo(b.get('kataIndonesia'));
-                          } else {
-                            return a
-                                .get('kataSahu')
-                                .compareTo(b.get('kataSahu'));
-                          }
-                        });
+                  if (controller.searchResults.isNotEmpty) {
+                    displayData = controller.searchResults;
+                  } else {
+                    if (controller.filteredResults.isEmpty ||
+                        controller.filteredResults.last.get('kataIndonesia') ==
+                            "Data tidak cocok") {
+                      final List<QueryDocumentSnapshot> docs =
+                          snapshot.data!.docs;
+                      List<QueryDocumentSnapshot> sortedDocs = docs;
 
-                        return ListView(
-                          shrinkWrap: true,
-                          children: sortedDocs.map((DocumentSnapshot document) {
-                            Map<String, dynamic> data =
-                                document.data()! as Map<String, dynamic>;
-                            return Card(
-                              elevation: 4.0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: ListTile(
-                                title: UnderlineText(
-                                  text: data[
-                                      controller.selectedDirection.value ==
-                                              LanguageDirection.indSahu
-                                          ? 'kataIndonesia'
-                                          : 'kataSahu'],
-                                ),
-                                subtitle: UnderlineText(
-                                    text: data[
-                                        controller.selectedDirection.value ==
-                                                LanguageDirection.indSahu
-                                            ? 'kataSahu'
-                                            : 'kataIndonesia']),
-                                trailing: const Icon(Icons
-                                    .arrow_forward_ios), // Tambahkan ikon di akhir
-                              ),
-                            );
-                          }).toList(),
-                        );
-                      } else {
-                        return Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: controller.searchResults.length,
-                            itemBuilder: (context, index) => Card(
-                              elevation: 4.0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: ListTile(
-                                leading: const Icon(
-                                    Icons.search), // Tambahkan ikon di awal
-
-                                title: UnderlineText(
-                                  text: controller.searchResults[index],
-                                ),
-                                trailing: const Icon(Icons
-                                    .arrow_forward_ios), // Tambahkan ikon di akhir
-                              ),
-                            ),
-                          ),
-                        );
+                      if (controller.selectedOption.value != 'Semua') {
+                        sortedDocs = docs
+                            .where((doc) =>
+                                doc['kategori'] ==
+                                controller.selectedOption.value)
+                            .toList();
                       }
+
+                      sortedDocs.sort((a, b) {
+                        String aKata = a[controller.selectedDirection.value ==
+                                LanguageDirection.indSahu
+                            ? 'kataIndonesia'
+                            : 'kataSahu'];
+                        String bKata = b[controller.selectedDirection.value ==
+                                LanguageDirection.indSahu
+                            ? 'kataIndonesia'
+                            : 'kataSahu'];
+                        return aKata.compareTo(bKata);
+                      });
+
+                      displayData = sortedDocs;
                     } else {
-                      if (controller.filteredResults.isEmpty ||
-                          controller.filteredResults.last ==
-                              "Data tidak cocok") {
-                        return ListView(
-                          shrinkWrap: true,
-                          children: snapshot.data!.docs
-                              .map((DocumentSnapshot document) {
-                            Map<String, dynamic> data =
-                                document.data()! as Map<String, dynamic>;
-                            if (data['kategori'] ==
-                                    controller.selectedOption.value ||
-                                controller.selectedOption.value == 'Semua') {
-                              return Card(
-                                elevation: 4.0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child: ListTile(
-                                  title: UnderlineText(
-                                    text: data[
-                                        controller.selectedDirection.value ==
-                                                LanguageDirection.indSahu
-                                            ? 'kataIndonesia'
-                                            : 'kataSahu'],
-                                  ),
-                                  subtitle: UnderlineText(
-                                      text: data[
-                                          controller.selectedDirection.value ==
-                                                  LanguageDirection.indSahu
-                                              ? 'kataSahu'
-                                              : 'kataIndonesia']),
-                                  trailing: const Icon(Icons
-                                      .arrow_forward_ios), // Tambahkan ikon di akhir
-                                ),
-                              );
-                            } else {
-                              return SizedBox();
-                            }
-                          }).toList(),
-                        );
-                      } else {
-                        return Container(
-                          decoration: BoxDecoration(
+                      displayData = controller.filteredResults;
+                    }
+                  }
+
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: displayData.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot document = displayData[index];
+                        Map<String, dynamic> data =
+                            document.data()! as Map<String, dynamic>;
+
+                        return Card(
+                          elevation: 4.0,
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: controller.filteredResults.length,
-                            itemBuilder: (context, index) {
-                              String result = controller.filteredResults[index];
-                              return Card(
-                                elevation: 4.0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child: ListTile(
-                                  leading: const Icon(Icons.search),
-                                  title: UnderlineText(
-                                    text: result,
-                                  ),
-                                  trailing: const Icon(Icons.arrow_forward_ios),
-                                ),
-                              );
+                          child: ListTile(
+                            onTap: () {
+                              Get.toNamed(Routes.detail,
+                                  arguments: document); // Here
                             },
+                            title: UnderlineText(
+                              text: data[controller.selectedDirection.value ==
+                                      LanguageDirection.indSahu
+                                  ? 'kataIndonesia'
+                                  : 'kataSahu'],
+                            ),
+                            subtitle: UnderlineText(
+                              text: data[controller.selectedDirection.value ==
+                                      LanguageDirection.indSahu
+                                  ? 'kataSahu'
+                                  : 'kataIndonesia'],
+                            ),
+                            trailing: const Icon(Icons.arrow_forward_ios),
                           ),
                         );
-                      }
-                    }
-                  });
-                },
-              ),
-            ],
-          ),
+                      });
+                });
+              },
+            ),
+          ],
         ),
       ),
     );

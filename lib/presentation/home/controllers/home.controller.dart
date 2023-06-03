@@ -8,25 +8,26 @@ enum LanguageDirection { indSahu, sahuInd }
 class HomeController extends GetxController {
   Rx<LanguageDirection> selectedDirection = LanguageDirection.indSahu.obs;
   var errorText = ''.obs;
-  var isFieldEmpty =
-      true.obs; // Nilai awalnya true, yang berarti TextField kosong.
+  var isFieldEmpty = true.obs;
 
   void setDirection(LanguageDirection direction) {
     selectedDirection.value = direction;
-    loadPatterns(); // Memanggil loadPatterns setelah merubah arah
+    loadPatterns();
   }
 
-  RxList<String> filteredResults = RxList<String>();
+  RxList<QueryDocumentSnapshot> filteredResults =
+      RxList<QueryDocumentSnapshot>();
   RxString selectedOption = 'Semua'.obs;
 
   final TextEditingController searchController = TextEditingController();
   final CollectionReference kamus =
       FirebaseFirestore.instance.collection('kamus');
   final AhoCorasick ahoCorasick = AhoCorasick();
-  final Map<String, String> patterns = {};
-  final RxList<String> searchResults = RxList<String>();
+  final Map<String, QueryDocumentSnapshot> patterns = {};
+  final RxList<QueryDocumentSnapshot> searchResults =
+      RxList<QueryDocumentSnapshot>();
 
-  Rx<Stream<QuerySnapshot>> stream = const Stream<QuerySnapshot>.empty().obs;
+  Rx<Stream<QuerySnapshot>> stream = Stream<QuerySnapshot>.empty().obs;
 
   Stream<QuerySnapshot> getStream() {
     if (selectedOption.value == 'Semua') {
@@ -45,7 +46,6 @@ class HomeController extends GetxController {
     loadPatterns();
     searchController.addListener(() {
       isFieldEmpty.value = searchController.text.isEmpty;
-      print('icon muncul');
     });
   }
 
@@ -70,7 +70,7 @@ class HomeController extends GetxController {
               ? doc.get('kataIndonesia')
               : doc.get('kataSahu');
       String searchPattern = originalPattern.replaceAll('_', '');
-      patterns[searchPattern] = originalPattern;
+      patterns[searchPattern] = doc;
       categories[originalPattern] = doc.get('kategori');
     }
 
@@ -93,18 +93,13 @@ class HomeController extends GetxController {
 
       for (int i = 0; i < patterns.length; i++) {
         if (indices[i].isNotEmpty) {
-          String originalPattern = patterns.values.elementAt(i);
+          QueryDocumentSnapshot originalPattern = patterns.values.elementAt(i);
           if (!searchResults.contains(originalPattern)) {
             if (selectedOption.value == 'Semua' ||
-                selectedOption.value == categories[originalPattern]) {
+                selectedOption.value ==
+                    categories[originalPattern.get('kataIndonesia')]) {
               searchResults.add(originalPattern);
               dataFound = true;
-
-              print('Kata "$originalPattern" ditemukan pada kata "$token"!');
-              print(
-                  'Total kemunculan "$originalPattern": ${indices[i].length}');
-              print('Posisi kemunculan ke-${i + 1}: ${indices[i].join(', ')}');
-              print('----');
             }
           }
         }
@@ -114,33 +109,12 @@ class HomeController extends GetxController {
     stopwatch.stop();
 
     if (!dataFound && searchController.text.isNotEmpty) {
-      searchResults.clear();
-      filteredResults.clear();
-      searchResults.add("Data tidak cocok");
-      filteredResults.add("Data tidak cocok");
-      Get.snackbar(
-        'Hasil Pencarian',
-        'Kata tidak ditemukan',
-      );
-
-      // Menampilkan pesan kategori tidak cocok jika ditemukan
-      if (selectedOption.value != 'Semua') {
-        filteredResults.clear();
-        filteredResults
-            .add("Kata tidak cocok dengan kategori '${selectedOption.value}'");
-      }
+      Get.snackbar('Hasil Pencarian', 'Kata tidak ditemukan');
     } else {
-      filteredResults = RxList<String>.from(searchResults);
+      filteredResults = RxList<QueryDocumentSnapshot>.from(searchResults);
     }
 
-    update(); // Memperbarui tampilan UI
-
-    print(
-      'Aho-Corasick matching executed in ${stopwatch.elapsedMilliseconds} ms',
-    );
-    print(
-      'Aho-Corasick matching executed in ${stopwatch.elapsedMilliseconds / 1000} seconds',
-    );
+    update();
   }
 
   List<String> options = [
@@ -161,8 +135,8 @@ class HomeController extends GetxController {
     stream.value = getStream();
     loadPatterns().then((_) {
       search();
-      filteredResults = RxList<String>.from(searchResults);
-      update(); // Menambahkan ini untuk memperbarui tampilan UI
+      filteredResults = RxList<QueryDocumentSnapshot>.from(searchResults);
+      update();
     });
   }
 

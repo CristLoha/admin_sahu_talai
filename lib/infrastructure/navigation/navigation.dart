@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../config.dart';
+import '../../presentation/detail/detail.screen.dart';
 import '../../presentation/screens.dart';
 import 'bindings/controllers/controllers_bindings.dart';
+import 'bindings/controllers/detail.controller.binding.dart';
 import 'routes.dart';
 
 class EnvironmentsBadge extends StatelessWidget {
@@ -28,7 +30,7 @@ class Nav {
   static List<GetPage> routes = [
     GetPage(
       name: Routes.home,
-      page: () => const HomeScreen(),
+      page: () => HomeScreen(),
       binding: HomeControllerBinding(),
     ),
     GetPage(
@@ -45,6 +47,11 @@ class Nav {
       name: Routes.addwords,
       page: () => const AddWordsScreen(),
       binding: AddWordsControllerBinding(),
+    ),
+    GetPage(
+      name: Routes.detail,
+      page: () => DetailScreen(),
+      binding: DetailControllerBinding(),
     ),
   ];
 }
