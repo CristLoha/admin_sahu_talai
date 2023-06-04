@@ -20,6 +20,7 @@ dependencies:
   fluttericon: 2.0.0
   flutter_easyloading: 3.0.5
   tuple: 2.0.1
+  just_audio: 0.9.34
   flutter: 
     sdk: flutter
 
