@@ -25,7 +25,7 @@ class HomeScreen extends GetView<HomeController> {
             onPressed: () {
               Get.toNamed(Routes.login);
             },
-            child: Text(
+            child: const Text(
               "Login",
               style: TextStyle(
                 color: Colors.white,

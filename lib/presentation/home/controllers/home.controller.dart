@@ -27,7 +27,7 @@ class HomeController extends GetxController {
   final RxList<QueryDocumentSnapshot> searchResults =
       RxList<QueryDocumentSnapshot>();
 
-  Rx<Stream<QuerySnapshot>> stream = Stream<QuerySnapshot>.empty().obs;
+  Rx<Stream<QuerySnapshot>> stream = const Stream<QuerySnapshot>.empty().obs;
 
   Stream<QuerySnapshot> getStream() {
     if (selectedOption.value == 'Semua') {
@@ -95,9 +95,11 @@ class HomeController extends GetxController {
         if (indices[i].isNotEmpty) {
           QueryDocumentSnapshot originalPattern = patterns.values.elementAt(i);
           if (!searchResults.contains(originalPattern)) {
+            String originalPatternInd = originalPattern.get('kataIndonesia');
+            String originalPatternSahu = originalPattern.get('kataSahu');
             if (selectedOption.value == 'Semua' ||
-                selectedOption.value ==
-                    categories[originalPattern.get('kataIndonesia')]) {
+                selectedOption.value == categories[originalPatternInd] ||
+                selectedOption.value == categories[originalPatternSahu]) {
               searchResults.add(originalPattern);
               dataFound = true;
             }
