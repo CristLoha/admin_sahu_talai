@@ -1,5 +1,4 @@
 import 'package:admin_sahu_talai/utils/extension/box_extension.dart';
-import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../app/controller/audio_controller.dart';
@@ -7,13 +6,16 @@ import '../../infrastructure/theme/theme.dart';
 import '../../widgets/text_underline.dart';
 import '../../widgets/title_appbar.dart';
 import '../home/controllers/home.controller.dart';
+import 'components/audio_button.dart';
 import 'controllers/detail.controller.dart';
 
 class DetailScreen extends GetView<DetailController> {
   final dynamic data = Get.arguments;
   final HomeController c = Get.find<HomeController>();
   final AudioController _audioController = Get.put(AudioController());
+
   DetailScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +49,7 @@ class DetailScreen extends GetView<DetailController> {
                                         LanguageDirection.indSahu
                                     ? data['kataSahu'].toString()
                                     : data['kataIndonesia'].toString(),
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 40,
                                   fontWeight: FontWeight.w500,
                                   color: white,
@@ -61,7 +63,7 @@ class DetailScreen extends GetView<DetailController> {
                                         LanguageDirection.indSahu
                                     ? data['kataIndonesia'].toString()
                                     : data['kataSahu'].toString(),
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 25,
                                   fontWeight: FontWeight.w400,
                                   color: white,
@@ -74,97 +76,28 @@ class DetailScreen extends GetView<DetailController> {
                                 : 20.heightBox,
                             Visibility(
                               visible: c.selectedDirection.value ==
-                                  LanguageDirection
-                                      .indSahu, // jika isSahu false, tampilkan
+                                  LanguageDirection.indSahu,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Column(
-                                    children: [
-                                      Material(
-                                        color: Colors.transparent,
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: InkWell(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          onTap: () async {
-                                            await _audioController
-                                                .togglePlaying(
-                                                    data['audioUrlPria']);
-                                          },
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.black
-                                                    .withOpacity(0.1),
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 8,
-                                                      horizontal: 18),
-                                              child: Column(
-                                                children: [
-                                                  const Icon(
-                                                    EvaIcons.volumeUp,
-                                                    color: white,
-                                                  ),
-                                                  Text(
-                                                    'Pria',
-                                                    style: whiteTextStyle
-                                                        .copyWith(fontSize: 14),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                  /// INI TOMBOL UNTUK SPEAKER/AUDIO
+                                  AudioButton(
+                                    isPlaying: _audioController.isPlayingPria,
+                                    onTap: () async {
+                                      await _audioController.togglePlayingPria(
+                                          data['audioUrlPria']);
+                                    },
+                                    label: 'Pria',
                                   ),
-                                  30.widthBox,
-                                  Column(
-                                    children: [
-                                      Material(
-                                        color: Colors.transparent,
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: InkWell(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          onTap: () async {
-                                            await _audioController
-                                                .togglePlaying(
-                                                    data['audioUrlWanita']);
-                                          },
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.black
-                                                    .withOpacity(0.1),
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 8,
-                                                      horizontal: 8),
-                                              child: Column(
-                                                children: [
-                                                  const Icon(
-                                                    EvaIcons.volumeUp,
-                                                    color: white,
-                                                  ),
-                                                  Text(
-                                                    'Wanita',
-                                                    style: whiteTextStyle
-                                                        .copyWith(fontSize: 14),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                  20.widthBox,
+                                  AudioButton(
+                                    isPlaying: _audioController.isPlayingWanita,
+                                    onTap: () async {
+                                      await _audioController
+                                          .togglePlayingWanita(
+                                              data['audioUrlWanita']);
+                                    },
+                                    label: 'Wanita',
                                   ),
                                 ],
                               ),
@@ -181,7 +114,7 @@ class DetailScreen extends GetView<DetailController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Contoh Kalimat: ',
                       style: TextStyle(
                         fontSize: 30,
@@ -194,7 +127,7 @@ class DetailScreen extends GetView<DetailController> {
                           c.selectedDirection.value == LanguageDirection.indSahu
                               ? data['contohKataSahu'].toString()
                               : data['contohKataIndo'].toString(),
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w400,
                         color: darkBlue,
