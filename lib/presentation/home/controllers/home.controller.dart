@@ -124,12 +124,10 @@ class HomeController extends GetxController {
     'Benda',
     'Kerja',
     'Sifat',
-    'Depan',
-    'Tumbuhan',
-    'Tempat',
-    'Angka',
     'Tempat/Lokasi',
-    'Panggilan'
+    'Panggilan',
+    'Angka',
+    'Depan',
   ];
 
   void updateCategory(String category) {
