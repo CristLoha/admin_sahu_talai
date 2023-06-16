@@ -50,38 +50,35 @@ class AdminController extends GetxController {
   }
 
   void search() {
-    String query =
-        searchController.text.replaceAll('_', ''); // no longer redefining query
-    List<String> tokens = query.split(' ');
+    String query = searchController.text.replaceAll('_', '');
     query.replaceAllMapped(RegExp(r'_\w'), (m) => '${m.group(0)![1]}̲');
     Stopwatch stopwatch = Stopwatch()..start();
 
     searchResults.clear();
     bool dataFound = false;
+    int resultCount = 0; // Menyimpan jumlah hasil yang telah ditemukan
 
-    // Melakukan pencarian untuk setiap token
-    for (String token in tokens) {
-      final indices = List.generate(patterns.length, (_) => <int>[]);
-      ahoCorasick.searchPattern(
-          token, indices); // Melakukan pencarian untuk token ini
+    final indices = List.generate(patterns.length, (_) => <int>[]);
+    ahoCorasick.searchPattern(query, indices);
 
-      for (int i = 0; i < patterns.length; i++) {
-        if (indices[i].isNotEmpty) {
-          Map<String, String> originalPatternMap = patterns.values.elementAt(i);
-          if (!searchResults.contains(originalPatternMap['kataSahu']) ||
-              !searchResults.contains(originalPatternMap['kataIndonesia'])) {
-            searchResults.add(originalPatternMap['kataSahu']!);
+    for (int i = 0; i < patterns.length; i++) {
+      if (indices[i].isNotEmpty) {
+        Map<String, String> originalPatternMap = patterns.values.elementAt(i);
+        if (!searchResults.contains(originalPatternMap['kataIndonesia'])) {
+          searchResults.add(originalPatternMap['kataIndonesia']!);
+          dataFound = true;
+          resultCount++; // Meningkatkan jumlah hasil yang ditemukan
 
-            searchResults.add(originalPatternMap['kataIndonesia']!);
+          print(
+              'Kata "${originalPatternMap['kataIndonesia']}" ditemukan dalam pencarian!');
+          print(
+              'Total kemunculan "${originalPatternMap['kataIndonesia']}": ${indices[i].length}');
+          print('Posisi kemunculan ke-${i + 1}: ${indices[i].join(', ')}');
+          print('----');
 
-            dataFound = true;
-
-            print(
-                'Kata "${originalPatternMap['kataSahu']}" atau "${originalPatternMap['kataIndonesia']}" ditemukan pada kata "$token"!');
-            print(
-                'Total kemunculan "${originalPatternMap['kataSahu']} atau ${originalPatternMap['kataIndonesia']}": ${indices[i].length}');
-            print('Posisi kemunculan ke-${i + 1}: ${indices[i].join(', ')}');
-            print('----');
+          if (resultCount >= 3) {
+            // Jika jumlah hasil sudah mencapai 3, hentikan pencarian
+            break;
           }
         }
       }

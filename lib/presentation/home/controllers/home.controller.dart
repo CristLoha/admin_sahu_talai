@@ -78,30 +78,77 @@ class HomeController extends GetxController {
     ahoCorasick.buildSuffixAndOutputLinks();
   }
 
+  // void search() {
+  //   String query = searchController.text.replaceAll('_', '');
+  //   List<String> tokens = query.split(' ');
+  //   query = query.replaceAllMapped(RegExp(r'_\w'), (m) => '${m.group(0)![1]}̲');
+  //   Stopwatch stopwatch = Stopwatch()..start();
+
+  //   searchResults.clear();
+  //   bool dataFound = false;
+
+  //   for (String token in tokens) {
+  //     final indices = List.generate(patterns.length, (_) => <int>[]);
+  //     ahoCorasick.searchPattern(token, indices);
+
+  //     for (int i = 0; i < patterns.length; i++) {
+  //       if (indices[i].isNotEmpty) {
+  //         QueryDocumentSnapshot originalPattern = patterns.values.elementAt(i);
+  //         if (!searchResults.contains(originalPattern)) {
+  //           String originalPatternInd = originalPattern.get('kataIndonesia');
+  //           String originalPatternSahu = originalPattern.get('kataSahu');
+  //           if (selectedOption.value == 'Semua' ||
+  //               selectedOption.value == categories[originalPatternInd] ||
+  //               selectedOption.value == categories[originalPatternSahu]) {
+  //             searchResults.add(originalPattern);
+  //             dataFound = true;
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   stopwatch.stop();
+
+  //   if (!dataFound && searchController.text.isNotEmpty) {
+  //     Get.snackbar('Hasil Pencarian', 'Kata tidak ditemukan');
+  //   } else {
+  //     filteredResults = RxList<QueryDocumentSnapshot>.from(searchResults);
+  //   }
+
+  //   update();
+  // }
+  /// menghapus tokens
   void search() {
     String query = searchController.text.replaceAll('_', '');
-    List<String> tokens = query.split(' ');
     query = query.replaceAllMapped(RegExp(r'_\w'), (m) => '${m.group(0)![1]}̲');
     Stopwatch stopwatch = Stopwatch()..start();
 
     searchResults.clear();
     bool dataFound = false;
+    int resultCount = 0; // Menyimpan jumlah hasil yang telah ditemukan
 
-    for (String token in tokens) {
-      final indices = List.generate(patterns.length, (_) => <int>[]);
-      ahoCorasick.searchPattern(token, indices);
+    final indices = List.generate(patterns.length, (_) => <int>[]);
+    ahoCorasick.searchPattern(query, indices);
 
-      for (int i = 0; i < patterns.length; i++) {
-        if (indices[i].isNotEmpty) {
-          QueryDocumentSnapshot originalPattern = patterns.values.elementAt(i);
-          if (!searchResults.contains(originalPattern)) {
-            String originalPatternInd = originalPattern.get('kataIndonesia');
-            String originalPatternSahu = originalPattern.get('kataSahu');
-            if (selectedOption.value == 'Semua' ||
-                selectedOption.value == categories[originalPatternInd] ||
-                selectedOption.value == categories[originalPatternSahu]) {
-              searchResults.add(originalPattern);
-              dataFound = true;
+    for (int i = 0; i < patterns.length; i++) {
+      if (indices[i].isNotEmpty) {
+        QueryDocumentSnapshot originalPattern = patterns.values.elementAt(i);
+        if (!searchResults.contains(originalPattern)) {
+          String originalPatternInd = originalPattern.get('kataIndonesia');
+          String originalPatternSahu = originalPattern.get('kataSahu');
+          if (selectedOption.value == 'Semua' ||
+              selectedOption.value == categories[originalPatternInd] ||
+              selectedOption.value == categories[originalPatternSahu]) {
+            searchResults.add(originalPattern);
+            dataFound = true;
+            resultCount++; // Meningkatkan jumlah hasil yang ditemukan
+            ahoCorasick.buildSuffixAndOutputLinks();
+            ahoCorasick.printTransitionTable();
+            ahoCorasick.bfs();
+            if (resultCount >= 3) {
+              // Jika jumlah hasil sudah mencapai 3, hentikan pencarian
+              break;
             }
           }
         }
