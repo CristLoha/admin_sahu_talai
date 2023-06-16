@@ -5,7 +5,8 @@ class Routes {
 
   static const addwords = '/add-words';
   static const admin = '/admin';
+  static const detail = '/detail';
   static const home = '/home';
   static const login = '/login';
-  static const detail = '/detail';
+  static const admin_detail = '/admin-detail';
 }

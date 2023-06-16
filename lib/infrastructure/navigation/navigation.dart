@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../config.dart';
+import '../../presentation/admin_detail/admin_detail.screen.dart';
 import '../../presentation/detail/detail.screen.dart';
 import '../../presentation/screens.dart';
+import 'bindings/controllers/admin_detail.controller.binding.dart';
 import 'bindings/controllers/controllers_bindings.dart';
 import 'bindings/controllers/detail.controller.binding.dart';
 import 'routes.dart';
@@ -52,6 +54,11 @@ class Nav {
       name: Routes.detail,
       page: () => DetailScreen(),
       binding: DetailControllerBinding(),
+    ),
+    GetPage(
+      name: Routes.admin_detail,
+      page: () => const AdminDetailScreen(),
+      binding: AdminDetailControllerBinding(),
     ),
   ];
 }

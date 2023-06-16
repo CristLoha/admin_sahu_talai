@@ -1,3 +1,4 @@
+import 'package:admin_sahu_talai/infrastructure/navigation/routes.dart';
 import 'package:admin_sahu_talai/infrastructure/theme/theme.dart';
 import 'package:admin_sahu_talai/utils/extension/box_extension.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,7 +23,7 @@ class TableAdmin extends StatelessWidget {
       stream: adminController.getStream(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
-          return Text('Something went wrong');
+          return const Text('Something went wrong');
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -98,85 +99,88 @@ class TableAdmin extends StatelessWidget {
                 }
 
                 return DataTable(
-                  headingRowColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.selected)) {
-                        return Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(40);
-                      }
-                      return darkGray;
-                    },
-                  ),
-                  columnSpacing: 10,
-                  columns: const <DataColumn>[
-                    DataColumn(
-                        label: Text('ID_KATA',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, color: white))),
-                    DataColumn(
-                        label: Text('KATEGORI_KATA',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, color: white))),
-                    DataColumn(
-                        label: Text('KATA_INDO',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, color: white))),
-                    DataColumn(
-                        label: Text('KATA_SAHU',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, color: white))),
-                    DataColumn(
-                        label: Text('DETAIL/UBAH/HAPUS',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, color: white))),
-                  ],
-                  rows: results.map<DataRow>((document) {
-                    Map<String, dynamic> data =
-                        document.data() as Map<String, dynamic>;
-                    return DataRow(
-                      cells: <DataCell>[
-                        DataCell(Text(document.id.length >= 5
-                            ? document.id.substring(0, 5)
-                            : document.id)),
-                        DataCell(Text(data['kategori'] ?? 'N/A')),
-                        DataCell(Text(data['kataIndonesia'] ?? 'N/A')),
-                        DataCell(
-                          UnderlineText(
-                            text: data['kataSahu'] ?? 'N/A',
+                    headingRowColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.selected)) {
+                          return Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(40);
+                        }
+                        return darkGray;
+                      },
+                    ),
+                    columnSpacing: 10,
+                    columns: const <DataColumn>[
+                      DataColumn(
+                          label: Text('ID_KATA',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, color: white))),
+                      DataColumn(
+                          label: Text('KATEGORI_KATA',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, color: white))),
+                      DataColumn(
+                          label: Text('KATA_INDO',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, color: white))),
+                      DataColumn(
+                          label: Text('KATA_SAHU',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, color: white))),
+                      DataColumn(
+                          label: Text('DETAIL/UBAH/HAPUS',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, color: white))),
+                    ],
+                    rows: List<DataRow>.generate(results.length, (index) {
+                      QueryDocumentSnapshot document = results[index];
+                      Map<String, dynamic> data =
+                          document.data() as Map<String, dynamic>;
+
+                      return DataRow(
+                        cells: <DataCell>[
+                          DataCell(Text(document.id.length >= 5
+                              ? document.id.substring(0, 5)
+                              : document.id)),
+                          DataCell(Text(data['kategori'] ?? 'N/A')),
+                          DataCell(Text(data['kataIndonesia'] ?? 'N/A')),
+                          DataCell(
+                            UnderlineText(
+                              text: data['kataSahu'] ?? 'N/A',
+                            ),
                           ),
-                        ),
-                        DataCell(
-                          Row(
-                            children: <Widget>[
-                              IconButton(
-                                icon: const Icon(Icons.info),
-                                onPressed: () {
-                                  // Do something for details
-                                },
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.edit),
-                                onPressed: () {
-                                  // Do something for edit
-                                },
-                              ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: red,
+                          DataCell(
+                            Row(
+                              children: <Widget>[
+                                IconButton(
+                                  icon: const Icon(Icons.info),
+                                  onPressed: () {
+                                    Get.toNamed(Routes.admin_detail,
+                                        arguments: data[index]);
+                                    print(index);
+                                  },
                                 ),
-                                onPressed: () =>
-                                    adminController.deleteHewan(document.id),
-                              ),
-                            ],
+                                IconButton(
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () {
+                                    // Do something for edit
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: red,
+                                  ),
+                                  onPressed: () =>
+                                      adminController.deleteHewan(document.id),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
-                );
+                        ],
+                      );
+                    }));
               }),
             ),
           ],
