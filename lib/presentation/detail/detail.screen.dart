@@ -6,7 +6,7 @@ import '../../infrastructure/theme/theme.dart';
 import '../../widgets/text_underline.dart';
 import '../../widgets/title_appbar.dart';
 import '../home/controllers/home.controller.dart';
-import 'components/audio_button.dart';
+import '../../widgets/audio_button.dart';
 import 'controllers/detail.controller.dart';
 
 class DetailScreen extends GetView<DetailController> {

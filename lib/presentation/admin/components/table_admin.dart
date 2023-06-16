@@ -157,7 +157,7 @@ class TableAdmin extends StatelessWidget {
                                   icon: const Icon(Icons.info),
                                   onPressed: () {
                                     Get.toNamed(Routes.admin_detail,
-                                        arguments: data[index]);
+                                        arguments: data);
                                     print(index);
                                   },
                                 ),

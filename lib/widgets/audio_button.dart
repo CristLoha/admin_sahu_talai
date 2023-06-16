@@ -2,7 +2,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../infrastructure/theme/theme.dart';
+import '../infrastructure/theme/theme.dart';
 
 class AudioButton extends StatelessWidget {
   final RxBool isPlaying;

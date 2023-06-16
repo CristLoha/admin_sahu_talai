@@ -57,7 +57,7 @@ class Nav {
     ),
     GetPage(
       name: Routes.admin_detail,
-      page: () => const AdminDetailScreen(),
+      page: () => AdminDetailScreen(),
       binding: AdminDetailControllerBinding(),
     ),
   ];
