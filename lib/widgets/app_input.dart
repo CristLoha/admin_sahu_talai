@@ -9,14 +9,17 @@ class AppInput extends StatelessWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final bool? obscureText;
+  final String? initialValue;
 
   final AddWordsController c = Get.put(AddWordsController());
+
   AppInput({
     Key? key,
     this.controller,
     this.prefixIcon,
     this.suffixIcon,
     this.obscureText,
+    this.initialValue,
   }) : super(key: key);
 
   @override
@@ -69,6 +72,8 @@ class AppInput extends StatelessWidget {
           ),
         ),
       ),
+      // menggunakan initialValue jika controller null
+      initialValue: controller == null ? initialValue : null,
     );
   }
 }

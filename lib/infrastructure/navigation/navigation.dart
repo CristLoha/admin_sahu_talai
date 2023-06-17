@@ -5,10 +5,12 @@ import 'package:get/get.dart';
 import '../../config.dart';
 import '../../presentation/admin_detail/admin_detail.screen.dart';
 import '../../presentation/detail/detail.screen.dart';
+import '../../presentation/edit_admin/edit_admin.screen.dart';
 import '../../presentation/screens.dart';
 import 'bindings/controllers/admin_detail.controller.binding.dart';
 import 'bindings/controllers/controllers_bindings.dart';
 import 'bindings/controllers/detail.controller.binding.dart';
+import 'bindings/controllers/edit_admin.controller.binding.dart';
 import 'routes.dart';
 
 class EnvironmentsBadge extends StatelessWidget {
@@ -56,9 +58,14 @@ class Nav {
       binding: DetailControllerBinding(),
     ),
     GetPage(
-      name: Routes.admin_detail,
+      name: Routes.admindDetail,
       page: () => AdminDetailScreen(),
       binding: AdminDetailControllerBinding(),
+    ),
+    GetPage(
+      name: Routes.editAdmin,
+      page: () => const EditAdminScreen(),
+      binding: EditAdminControllerBinding(),
     ),
   ];
 }

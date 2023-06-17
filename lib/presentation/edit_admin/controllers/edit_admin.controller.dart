@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,7 +13,7 @@ import 'package:get/get.dart';
 import '../../../infrastructure/navigation/routes.dart';
 import '../../../infrastructure/theme/theme.dart';
 
-class AddWordsController extends GetxController {
+class EditAdminController extends GetxController {
   final GlobalKey<FormState> formKe1 = GlobalKey<FormState>();
   GlobalKey<FormState> formKey2 = GlobalKey<FormState>();
   GlobalKey<FormState> formKey3 = GlobalKey<FormState>();
@@ -19,6 +21,8 @@ class AddWordsController extends GetxController {
   final progress = RxDouble(0.0);
   File? _audioFilePria;
   RxBool isSelectedPria = false.obs;
+  final audioFileNamePria = ''.obs;
+  final audioFileNameWanita = ''.obs;
 
   File? _audioFileWanita;
   RxBool isSelectedWanita = false.obs;
@@ -43,6 +47,51 @@ class AddWordsController extends GetxController {
   TextEditingController kIndo = TextEditingController();
   TextEditingController cKIndo = TextEditingController();
   TextEditingController kategori = TextEditingController();
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
+  // Future<void> initData(Map<String, dynamic> data) async {
+  //   kSahu.text = data['kataSahu'] ?? '';
+  //   cKSahu.text = data['contohKataSahu'] ?? '';
+  //   kIndo.text = data['kataIndonesia'] ?? '';
+  //   cKIndo.text = data['contohKataIndo'] ?? '';
+  //   kategori.text = data['kategori'] ?? '';
+  //   audioFileNamePria.value = data['audioUrlPria'] ?? '';
+  //   audioFileNameWanita.value = data['audioUrlWanita'] ?? '';
+  // }
+  Future<void> getKamusId(String docId) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> doc =
+          await FirebaseFirestore.instance.collection('kamus').doc(docId).get();
+
+      // Cek apakah dokumen ada
+      if (doc.exists) {
+        Map<String, dynamic>? data = doc.data();
+
+        if (data != null) {
+          // Memasukkan data ke dalam TextEditingController dan RxString
+          kSahu.text = data['kataSahu'] ?? '';
+          cKSahu.text = data['contohKataSahu'] ?? '';
+          kIndo.text = data['kataIndonesia'] ?? '';
+          cKIndo.text = data['contohKataIndo'] ?? '';
+          kategori.text = data['kategori'] ?? '';
+          selectedOption.value = data['kategori'];
+          audioFileNamePria.value = data['audioUrlPria'] ?? '';
+          audioFileNameWanita.value = data['audioUrlWanita'] ?? '';
+        }
+      } else {
+        print('No such document!');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    String docId = Get.arguments; // misalnya ambil dari argumen
+    getKamusId(docId);
+  }
 
   void updateProgress(TaskSnapshot snapshot) {
     progress.value = snapshot.bytesTransferred / snapshot.totalBytes;
@@ -71,7 +120,7 @@ class AddWordsController extends GetxController {
       // Simpan nilai kategori ke dalam controller
       kategori.text = selectedOption.value;
       // Kirim data
-      sendDataToFirebase();
+      sendDataToFirebase(Get.arguments);
     }
   }
 
@@ -85,15 +134,15 @@ class AddWordsController extends GetxController {
     if (result != null && result.files.isNotEmpty) {
       final file = File(result.files.single.path!);
       final fileSize = await file.length();
-      const maxSize = 5 * 1024 * 1024; // maksimum ukuran file 5MB
+      const maxSize = 5 * 1024 * 1024; // maximum file size 5MB
       if (fileSize > maxSize) {
         infoFailed(
             "Terjadi kesalahan", "Ukuran file tidak boleh lebih dari 5MB");
-
         return;
       }
 
       _audioFilePria = file;
+      audioFileNamePria.value = file.path.split('/').last;
       isSelectedPria.value = true;
 
       update();
@@ -103,16 +152,15 @@ class AddWordsController extends GetxController {
   void resetAudioPria() {
     _audioFilePria = null;
     isSelectedPria.value = false;
+    audioFileNamePria.value = ''; // reset the audio file name
     update();
   }
 
-  String get audioFileNamePria =>
-      _audioFilePria != null ? _audioFilePria!.path.split('/').last : '';
   String get audioFileSizePria => _audioFilePria != null
       ? '${(_audioFilePria!.lengthSync() / 1024).toStringAsFixed(2)} KB'
       : '';
 
-  ///PRIAwANITA
+  ///WANITA
   Future<void> pickAudioWanita() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -122,15 +170,15 @@ class AddWordsController extends GetxController {
     if (result != null && result.files.isNotEmpty) {
       final file = File(result.files.single.path!);
       final fileSize = await file.length();
-      const maxSize = 5 * 1024 * 1024; // maksimum ukuran file 5MB
+      const maxSize = 5 * 1024 * 1024; // maximum file size 5MB
       if (fileSize > maxSize) {
         infoFailed(
             "Terjadi kesalahan", "Ukuran file tidak boleh lebih dari 5MB");
-
         return;
       }
 
       _audioFileWanita = file;
+      audioFileNameWanita.value = file.path.split('/').last;
       isSelectedWanita.value = true;
 
       update();
@@ -140,36 +188,15 @@ class AddWordsController extends GetxController {
   void resetAudioWanita() {
     _audioFileWanita = null;
     isSelectedWanita.value = false;
+    audioFileNameWanita.value = ''; // reset the audio file name
     update();
   }
 
-  String get audioFileNameWanita =>
-      _audioFileWanita != null ? _audioFileWanita!.path.split('/').last : '';
   String get audioFileSizeWanita => _audioFileWanita != null
       ? '${(_audioFileWanita!.lengthSync() / 1024).toStringAsFixed(2)} KB'
       : '';
 
-  Future<void> sendDataToFirebase() async {
-    if (selectedOption.value.isEmpty || errorText.value.isNotEmpty) {
-      // Tampilkan pesan error jika kategori belum dipilih atau ada pesan error pada dropdown
-      errorText.value = 'Pilih salah satu kategori';
-      return;
-    }
-
-    // Pastikan ada file audio yang dipilih
-
-    ///pria
-    if (_audioFilePria == null) {
-      infoFailed("Terjadi kesalahan", "Pilih audio terlebih dahulu");
-      return;
-    }
-
-    if (_audioFileWanita == null) {
-      infoFailed("Terjadi kesalahan", "Pilih audio terlebih dahulu");
-      return;
-    }
-
-    // Pastikan ada koneksi internet
+  Future<void> sendDataToFirebase(String docId) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
       infoFailed(
@@ -177,7 +204,6 @@ class AddWordsController extends GetxController {
       return;
     }
 
-    // Ambil referensi ke Firebase Storage dan Firestore
     final storageRefPria = FirebaseStorage.instance
         .ref()
         .child('audioPria/${DateTime.now().toString()}');
@@ -185,89 +211,75 @@ class AddWordsController extends GetxController {
     final storageRefWanita = FirebaseStorage.instance
         .ref()
         .child('audioWanita/${DateTime.now().toString()}');
-    final firestoreRef = FirebaseFirestore.instance.collection('kamus').doc();
+
+    final firestoreRef =
+        FirebaseFirestore.instance.collection('kamus').doc(docId);
 
     try {
-      // Tampilkan dialog progress dan progress bar
-      showDialog(
-        context: Get.overlayContext!,
-        builder: (context) {
-          return WillPopScope(
-            onWillPop: () async {
-              // Tampilkan pesan bahwa proses upload sedang berjalan
-              Get.snackbar('Info', 'Proses upload sedang berjalan...');
-              return false;
-            },
-            child: AlertDialog(
-              title: Text(
-                'Sedang mengirim data...',
-                style: darkBlueTextStyle.copyWith(fontWeight: medium),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Obx(() => LinearProgressIndicator(
-                      value: progress
-                          .value)), // Ubah progress menjadi sebuah variabel Rx agar dapat diupdate secara reactive
-                  const SizedBox(height: 16),
-                  Obx(() => Text(
-                      '${(progress * 100).toStringAsFixed(0)}%')), // Ubah progress menjadi sebuah variabel Rx agar dapat diupdate secara reactive
-                ],
-              ),
-            ),
-          );
-        },
-      );
-// Upload file audio untuk pria ke Firebase Storage dan update progress bar
-      final taskpria = storageRefPria.putFile(_audioFilePria!);
-      taskpria.snapshotEvents.listen((snapshot) {
-        updateProgress(snapshot);
-      });
-      await taskpria;
+      // Your showDialog code here
 
-// Upload file audio untuk wanita ke Firebase Storage dan update progress bar
-      final taskWanita = storageRefWanita.putFile(_audioFileWanita!);
-      taskWanita.snapshotEvents.listen((snapshot) {
-        updateProgress(snapshot);
-      });
-      await taskWanita;
+      var downloadUrlPria = '';
+      var downloadUrlWanita = '';
 
-// Set metadata file audio menjadi "audio/mpeg"
-      final metadata = SettableMetadata(contentType: 'audio/mpeg');
-      await storageRefPria.updateMetadata(metadata);
-      await storageRefWanita.updateMetadata(metadata);
+      // Only upload the file if it was selected
+      if (_audioFilePria != null) {
+        final taskpria = storageRefPria.putFile(_audioFilePria!);
+        taskpria.snapshotEvents.listen((snapshot) {
+          updateProgress(snapshot);
+        });
 
-      // Simpan URL file audio di Firestore
-      final downloadUrlPria = await storageRefPria.getDownloadURL();
-      final downloadUrlWanita = await storageRefWanita.getDownloadURL();
+        await taskpria;
 
-      await firestoreRef.set({
-        'audioUrlPria': downloadUrlPria,
-        'audioUrlWanita': downloadUrlWanita,
+        final metadata = SettableMetadata(contentType: 'audio/mpeg');
+        await storageRefPria.updateMetadata(metadata);
+        downloadUrlPria = await storageRefPria.getDownloadURL();
+      }
+
+      // Only upload the file if it was selected
+      if (_audioFileWanita != null) {
+        final taskWanita = storageRefWanita.putFile(_audioFileWanita!);
+        taskWanita.snapshotEvents.listen((snapshot) {
+          updateProgress(snapshot);
+        });
+
+        await taskWanita;
+
+        final metadata = SettableMetadata(contentType: 'audio/mpeg');
+        await storageRefWanita.updateMetadata(metadata);
+        downloadUrlWanita = await storageRefWanita.getDownloadURL();
+      }
+
+      var dataToUpdate = {
         'kataSahu': kSahu.text,
         'contohKataSahu': cKSahu.text,
         'kataIndonesia': kIndo.text,
         'contohKataIndo': cKIndo.text,
         'kategori': selectedOption.value,
-        'addDataTime': DateTime.now().toIso8601String(),
-      });
+        'updatedTime': DateTime.now().toIso8601String(),
+      };
 
-      // Reset file audio
+      // Only add the URL to the data if the file was uploaded
+      if (downloadUrlPria.isNotEmpty) {
+        dataToUpdate['audioUrlPria'] = downloadUrlPria;
+      }
+
+      // Only add the URL to the data if the file was uploaded
+      if (downloadUrlWanita.isNotEmpty) {
+        dataToUpdate['audioUrlWanita'] = downloadUrlWanita;
+      }
+
+      await firestoreRef.update(dataToUpdate);
+
       resetAudioPria();
+      resetAudioWanita();
 
-      // Tampilkan pesan sukses
-      infoSuccess("Berhasil", "Data berhasil terkirim");
+      infoSuccess("Berhasil", "Data berhasil diubah");
     } on FirebaseException {
-      // Tampilkan pesan kesalahan
       infoFailed("Gagal mengunggah file audio",
           "Terjadi Kesalahan saat menggungah file audio");
     } finally {
-      // Tutup dialog progress
       Navigator.of(Get.overlayContext!).pop();
-      // Cek apakah progress sudah 100%
       if (progress.value == 1.0) {
-        // Ubah progress menjadi sebuah variabel Rx agar dapat diupdate secara reactive
-        // Kembali ke halaman utama setelah proses upload selesai
         Future.delayed(const Duration(milliseconds: 1),
             () => Get.offAllNamed(Routes.admin));
       }

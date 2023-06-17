@@ -156,7 +156,7 @@ class TableAdmin extends StatelessWidget {
                                 IconButton(
                                   icon: const Icon(Icons.info),
                                   onPressed: () {
-                                    Get.toNamed(Routes.admin_detail,
+                                    Get.toNamed(Routes.admindDetail,
                                         arguments: data);
                                     print(index);
                                   },
@@ -164,7 +164,8 @@ class TableAdmin extends StatelessWidget {
                                 IconButton(
                                   icon: Icon(Icons.edit),
                                   onPressed: () {
-                                    // Do something for edit
+                                    Get.toNamed(Routes.editAdmin,
+                                        arguments: document.id);
                                   },
                                 ),
                                 IconButton(

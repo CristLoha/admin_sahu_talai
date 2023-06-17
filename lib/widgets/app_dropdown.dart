@@ -1,11 +1,11 @@
-import 'package:admin_sahu_talai/presentation/add_words/controllers/add_words.controller.dart';
+import 'package:admin_sahu_talai/presentation/edit_admin/controllers/edit_admin.controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../infrastructure/theme/theme.dart';
 
 class AppDropDown extends StatelessWidget {
   AppDropDown({Key? key}) : super(key: key);
-  final AddWordsController c = Get.put(AddWordsController());
+  final EditAdminController c = Get.put(EditAdminController());
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +21,7 @@ class AppDropDown extends StatelessWidget {
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               hint: const Text("Pilih Kategori"),
-              value: c.selectedOption.value.isEmpty
-                  ? null
-                  : c.selectedOption.value,
+              value: c.selectedOption.value,
               isExpanded: true,
               icon: const Icon(Icons.arrow_drop_down),
               iconSize: 24,
