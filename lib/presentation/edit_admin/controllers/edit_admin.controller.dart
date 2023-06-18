@@ -75,8 +75,22 @@ class EditAdminController extends GetxController {
           cKIndo.text = data['contohKataIndo'] ?? '';
           kategori.text = data['kategori'] ?? '';
           selectedOption.value = data['kategori'];
-          audioFileNamePria.value = data['audioUrlPria'] ?? '';
-          audioFileNameWanita.value = data['audioUrlWanita'] ?? '';
+
+          if (data['audioUrlPria'] != null) {
+            Uri audioUri = Uri.parse(data['audioUrlPria']);
+            String fileName = audioUri.pathSegments.last
+                .replaceFirst('audioPria/', '')
+                .trim();
+            audioFileNamePria.value = fileName;
+          }
+
+          if (data['audioUrlWanita'] != null) {
+            Uri audioUri = Uri.parse(data['audioUrlWanita']);
+            String fileName = audioUri.pathSegments.last
+                .replaceFirst('audioWanita/', '')
+                .trim();
+            audioFileNameWanita.value = fileName;
+          }
         }
       } else {
         print('No such document!');
@@ -196,6 +210,7 @@ class EditAdminController extends GetxController {
       ? '${(_audioFileWanita!.lengthSync() / 1024).toStringAsFixed(2)} KB'
       : '';
 
+  ///UPDATE DATA
   Future<void> sendDataToFirebase(String docId) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
@@ -215,19 +230,17 @@ class EditAdminController extends GetxController {
     final firestoreRef =
         FirebaseFirestore.instance.collection('kamus').doc(docId);
 
-    try {
-      // Your showDialog code here
+    // Add this line
+    Get.dialog(const Center(child: CircularProgressIndicator()),
+        barrierDismissible: false);
 
+    try {
       var downloadUrlPria = '';
       var downloadUrlWanita = '';
 
       // Only upload the file if it was selected
       if (_audioFilePria != null) {
         final taskpria = storageRefPria.putFile(_audioFilePria!);
-        taskpria.snapshotEvents.listen((snapshot) {
-          updateProgress(snapshot);
-        });
-
         await taskpria;
 
         final metadata = SettableMetadata(contentType: 'audio/mpeg');
@@ -238,10 +251,6 @@ class EditAdminController extends GetxController {
       // Only upload the file if it was selected
       if (_audioFileWanita != null) {
         final taskWanita = storageRefWanita.putFile(_audioFileWanita!);
-        taskWanita.snapshotEvents.listen((snapshot) {
-          updateProgress(snapshot);
-        });
-
         await taskWanita;
 
         final metadata = SettableMetadata(contentType: 'audio/mpeg');
@@ -267,22 +276,30 @@ class EditAdminController extends GetxController {
       if (downloadUrlWanita.isNotEmpty) {
         dataToUpdate['audioUrlWanita'] = downloadUrlWanita;
       }
-
       await firestoreRef.update(dataToUpdate);
 
       resetAudioPria();
       resetAudioWanita();
 
+      // Tambahkan delay sebelum menghilangkan dialog loading
+      await Future.delayed(const Duration(seconds: 2));
+
+      Get.back(); // Menghilangkan dialog loading
+
       infoSuccess("Berhasil", "Data berhasil diubah");
+
+      // Tambahkan delay sebelum navigasi
+      await Future.delayed(const Duration(seconds: 2));
     } on FirebaseException {
+      // Tambahkan delay sebelum menghilangkan dialog loading
+      await Future.delayed(const Duration(seconds: 2));
+
+      Get.back(); // Menghilangkan dialog loading
+
       infoFailed("Gagal mengunggah file audio",
           "Terjadi Kesalahan saat menggungah file audio");
     } finally {
-      Navigator.of(Get.overlayContext!).pop();
-      if (progress.value == 1.0) {
-        Future.delayed(const Duration(milliseconds: 1),
-            () => Get.offAllNamed(Routes.admin));
-      }
+      Get.offAllNamed(Routes.admin);
     }
   }
 

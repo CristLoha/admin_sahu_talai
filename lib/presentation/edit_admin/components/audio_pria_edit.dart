@@ -79,8 +79,10 @@ class AppWidgetAudioPria extends StatelessWidget {
           8.widthBox,
           Flexible(
             flex: 1,
+
+            ///NAMA
             child: Obx(() => Text(
-                  c.audioFileNameWanita.value,
+                  c.audioFileNamePria.value,
                   style: darkGrayTextStyle.copyWith(fontWeight: medium),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,

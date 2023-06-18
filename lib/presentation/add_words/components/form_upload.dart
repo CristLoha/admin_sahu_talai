@@ -3,13 +3,13 @@ import 'package:admin_sahu_talai/utils/extension/box_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../widgets/app_button.dart';
-import '../../../widgets/app_dropdown.dart';
+import 'app_dropdown.dart';
 import '../../../widgets/app_input.dart';
 import '../../../widgets/title_input.dart';
 import 'audio_pria_upload.dart';
 import 'audio_wanita_upload.dart';
 
-final _formKey = GlobalKey<FormState>();
+final _formKey1 = GlobalKey<FormState>();
 
 class FormUploadAdd extends StatelessWidget {
   final AddWordsController controller = Get.put(AddWordsController());
@@ -21,7 +21,7 @@ class FormUploadAdd extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
+      key: _formKey1,
       child: Column(
         children: [
           Column(
@@ -63,7 +63,7 @@ class FormUploadAdd extends StatelessWidget {
                 text: 'Kategori',
               ),
               8.heightBox,
-              AppDropDown(),
+              AppDropDownAdd(),
               5.heightBox,
               Obx(() => Text(
                     controller.errorText
@@ -90,7 +90,7 @@ class FormUploadAdd extends StatelessWidget {
             height: 56,
             text: 'SIMPAN',
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
+              if (_formKey1.currentState!.validate()) {
                 if (controller.selectedOption.isEmpty) {
                   // Tampilkan pesan error jika dropdown belum dipilih
                   controller.errorText.value = 'Pilih salah satu opsi';

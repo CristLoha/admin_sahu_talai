@@ -5,9 +5,9 @@ import 'package:admin_sahu_talai/utils/extension/box_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../widgets/app_button.dart';
-import '../../../widgets/app_dropdown.dart';
 import '../../../widgets/app_input.dart';
 import '../../../widgets/title_input.dart';
+import 'dropdown_edit.dart';
 
 final _formKey = GlobalKey<FormState>();
 
@@ -72,7 +72,7 @@ class FormEditKamus extends StatelessWidget {
                     text: 'Kategori',
                   ),
                   8.heightBox,
-                  AppDropDown(),
+                  AppDropDownEdit(),
                   5.heightBox,
                   Obx(() => Text(
                         controller.errorText.value,

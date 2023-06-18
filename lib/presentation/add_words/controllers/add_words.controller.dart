@@ -12,10 +12,6 @@ import '../../../infrastructure/navigation/routes.dart';
 import '../../../infrastructure/theme/theme.dart';
 
 class AddWordsController extends GetxController {
-  final GlobalKey<FormState> formKe1 = GlobalKey<FormState>();
-  GlobalKey<FormState> formKey2 = GlobalKey<FormState>();
-  GlobalKey<FormState> formKey3 = GlobalKey<FormState>();
-  GlobalKey<FormState> formKey4 = GlobalKey<FormState>();
   final progress = RxDouble(0.0);
   File? _audioFilePria;
   RxBool isSelectedPria = false.obs;

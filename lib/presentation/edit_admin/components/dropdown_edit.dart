@@ -1,10 +1,10 @@
 import 'package:admin_sahu_talai/presentation/edit_admin/controllers/edit_admin.controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../infrastructure/theme/theme.dart';
+import '../../../infrastructure/theme/theme.dart';
 
-class AppDropDown extends StatelessWidget {
-  AppDropDown({Key? key}) : super(key: key);
+class AppDropDownEdit extends StatelessWidget {
+  AppDropDownEdit({Key? key}) : super(key: key);
   final EditAdminController c = Get.put(EditAdminController());
 
   @override
