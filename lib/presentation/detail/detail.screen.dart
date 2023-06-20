@@ -32,7 +32,7 @@ class DetailScreen extends GetView<DetailController> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                height: c.selectedDirection.value == LanguageDirection.indSahu
+                height: c.selectedDirection.value == LanguageDirection.sahuInd
                     ? 260
                     : 200,
                 color: shamrockGreen,
@@ -47,8 +47,8 @@ class DetailScreen extends GetView<DetailController> {
                               child: UnderlineText(
                                 text: c.selectedDirection.value ==
                                         LanguageDirection.indSahu
-                                    ? data['kataSahu'].toString()
-                                    : data['kataIndonesia'].toString(),
+                                    ? data['kataIndonesia'].toString()
+                                    : data['kataSahu'].toString(),
                                 textStyle: const TextStyle(
                                   fontSize: 40,
                                   fontWeight: FontWeight.w500,
@@ -61,8 +61,8 @@ class DetailScreen extends GetView<DetailController> {
                               child: UnderlineText(
                                 text: c.selectedDirection.value ==
                                         LanguageDirection.indSahu
-                                    ? data['kataIndonesia'].toString()
-                                    : data['kataSahu'].toString(),
+                                    ? data['kataSahu'].toString()
+                                    : data['kataIndonesia'].toString(),
                                 textStyle: const TextStyle(
                                   fontSize: 25,
                                   fontWeight: FontWeight.w400,
@@ -71,12 +71,12 @@ class DetailScreen extends GetView<DetailController> {
                               ),
                             ),
                             c.selectedDirection.value ==
-                                    LanguageDirection.indSahu
+                                    LanguageDirection.sahuInd
                                 ? 30.heightBox
                                 : 20.heightBox,
                             Visibility(
                               visible: c.selectedDirection.value ==
-                                  LanguageDirection.indSahu,
+                                  LanguageDirection.sahuInd,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -125,8 +125,8 @@ class DetailScreen extends GetView<DetailController> {
                     UnderlineText(
                       text:
                           c.selectedDirection.value == LanguageDirection.indSahu
-                              ? data['contohKataSahu'].toString()
-                              : data['contohKataIndo'].toString(),
+                              ? data['contohKataIndo'].toString()
+                              : data['contohKataSahu'].toString(),
                       textStyle: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w400,
