@@ -61,7 +61,7 @@ class FormEditKamus extends StatelessWidget {
                   ),
                   16.heightBox,
                   const TittleInput(
-                    text: 'Contoh  Indonesia',
+                    text: 'Contoh Indonesia',
                   ),
                   8.heightBox,
                   AppInput(
@@ -96,7 +96,7 @@ class FormEditKamus extends StatelessWidget {
               AppButton(
                 width: 283,
                 height: 56,
-                text: 'SIMPAN',
+                text: 'UBAH',
                 onPressed: () {
                   controller.sendDataToFirebase(Get.arguments.toString());
                 },
