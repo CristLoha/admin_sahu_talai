@@ -148,10 +148,10 @@ class EditAdminController extends GetxController {
     if (result != null && result.files.isNotEmpty) {
       final file = File(result.files.single.path!);
       final fileSize = await file.length();
-      const maxSize = 5 * 1024 * 1024; // maximum file size 5MB
+      const maxSize = 1 * 1024 * 1024; // maximum file size 1MB
       if (fileSize > maxSize) {
         infoFailed(
-            "Terjadi kesalahan", "Ukuran file tidak boleh lebih dari 5MB");
+            "Terjadi kesalahan", "Ukuran file tidak boleh lebih dari 1MB");
         return;
       }
 
@@ -184,10 +184,10 @@ class EditAdminController extends GetxController {
     if (result != null && result.files.isNotEmpty) {
       final file = File(result.files.single.path!);
       final fileSize = await file.length();
-      const maxSize = 5 * 1024 * 1024; // maximum file size 5MB
+      const maxSize = 1 * 1024 * 1024; // maximum file size 1MB
       if (fileSize > maxSize) {
         infoFailed(
-            "Terjadi kesalahan", "Ukuran file tidak boleh lebih dari 5MB");
+            "Terjadi kesalahan", "Ukuran file tidak boleh lebih dari 1MB");
         return;
       }
 
