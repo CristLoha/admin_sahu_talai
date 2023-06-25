@@ -252,7 +252,7 @@ class AddWordsController extends GetxController {
       resetAudioPria();
 
       // Tampilkan pesan sukses
-      infoSuccess("Berhasil", "Data berhasil terkirim");
+      infoSuccess("Berhasil", "Data berhasil tersimpan");
     } on FirebaseException {
       // Tampilkan pesan kesalahan
       infoFailed("Gagal mengunggah file audio",

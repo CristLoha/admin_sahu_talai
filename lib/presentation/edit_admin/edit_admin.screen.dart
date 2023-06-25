@@ -19,7 +19,7 @@ class EditAdminScreen extends GetView<EditAdminController> {
           elevation: 0,
           centerTitle: true,
           iconTheme: const IconThemeData(color: white),
-          title: const Text('Tambah Kata')),
+          title: const Text('Ubah Kata')),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
