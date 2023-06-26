@@ -216,4 +216,7 @@ class AdminController extends GetxController {
       dismissOnTouchOutside: false,
     ).show();
   }
+
+  void allertNotif(String titleDialog, String subDialog, String titleContent,
+      String subContent) {}
 }

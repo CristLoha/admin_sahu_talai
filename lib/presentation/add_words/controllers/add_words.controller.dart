@@ -172,6 +172,46 @@ class AddWordsController extends GetxController {
           "Tidak ada Internet", "Silahkan periksa koneksi internet Anda");
       return;
     }
+    // Add confirmation dialog here
+    var confirmed = await Get.dialog<bool>(
+      AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Text(
+          'Konfirmasi',
+          style: darkBlueTextStyle.copyWith(fontWeight: bold),
+        ),
+        content: Text(
+          'Apakah Anda yakin ingin menambahkan data kata baru?',
+          style: darkBlueTextStyle.copyWith(fontSize: 15),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back(result: false);
+            },
+            child: Text(
+              'Tidak',
+              style: darkBlueTextStyle,
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back(result: true);
+            },
+            child: Text(
+              'Ya',
+              style: oldRoseTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (!(confirmed ?? false)) {
+      return;
+    }
 
     // Ambil referensi ke Firebase Storage dan Firestore
     final storageRefPria = FirebaseStorage.instance

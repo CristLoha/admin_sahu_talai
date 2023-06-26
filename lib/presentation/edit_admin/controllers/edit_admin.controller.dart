@@ -49,15 +49,7 @@ class EditAdminController extends GetxController {
   TextEditingController kategori = TextEditingController();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
-  // Future<void> initData(Map<String, dynamic> data) async {
-  //   kSahu.text = data['kataSahu'] ?? '';
-  //   cKSahu.text = data['contohKataSahu'] ?? '';
-  //   kIndo.text = data['kataIndonesia'] ?? '';
-  //   cKIndo.text = data['contohKataIndo'] ?? '';
-  //   kategori.text = data['kategori'] ?? '';
-  //   audioFileNamePria.value = data['audioUrlPria'] ?? '';
-  //   audioFileNameWanita.value = data['audioUrlWanita'] ?? '';
-  // }
+
   Future<void> getKamusId(String docId) async {
     try {
       DocumentSnapshot<Map<String, dynamic>> doc =
@@ -211,11 +203,52 @@ class EditAdminController extends GetxController {
       : '';
 
   ///UPDATE DATA
+
   Future<void> sendDataToFirebase(String docId) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
       infoFailed(
           "Tidak ada Internet", "Silahkan periksa koneksi internet Anda");
+      return;
+    }
+
+    var confirmed = await Get.dialog<bool>(
+      AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Text(
+          'Konfirmasi',
+          style: darkBlueTextStyle.copyWith(fontWeight: bold),
+        ),
+        content: Text(
+          'Apakah Anda yakin ingin mengubah data kata ini?',
+          style: darkBlueTextStyle.copyWith(fontSize: 15),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back(result: false);
+            },
+            child: Text(
+              'Tidak',
+              style: darkBlueTextStyle,
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back(result: true);
+            },
+            child: Text(
+              'Ya',
+              style: oldRoseTextStyle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (!(confirmed ?? false)) {
       return;
     }
 

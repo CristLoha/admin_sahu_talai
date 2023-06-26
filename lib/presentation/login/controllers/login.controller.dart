@@ -15,7 +15,7 @@ class LoginController extends GetxController {
       TextEditingController(text: 'admin2@gmail.com');
   TextEditingController passC = TextEditingController(text: '123456');
   FirebaseAuth auth = FirebaseAuth.instance;
-  RxBool isHidden = false.obs;
+  RxBool isHidden = true.obs;
 
   void login() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
