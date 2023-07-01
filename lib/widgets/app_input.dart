@@ -35,6 +35,7 @@ class AppInput extends StatelessWidget {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       controller: controller,
       cursorColor: darkBlue,
+      textCapitalization: TextCapitalization.sentences,
       textAlign: TextAlign.start,
       obscureText: obscureText ?? false,
       decoration: InputDecoration(
