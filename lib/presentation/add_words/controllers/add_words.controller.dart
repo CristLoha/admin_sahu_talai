@@ -222,6 +222,19 @@ class AddWordsController extends GetxController {
         .ref()
         .child('audioWanita/${DateTime.now().toString()}');
     final firestoreRef = FirebaseFirestore.instance.collection('kamus').doc();
+// Ambil referensi ke koleksi Firestore
+    final firestoreCollectionRef =
+        FirebaseFirestore.instance.collection('kamus');
+
+// Cek apakah kataIndonesia sudah ada dalam database
+    final existingWordSnapshots = await firestoreCollectionRef
+        .where('kataIndonesia', isEqualTo: kIndo.text)
+        .get();
+    if (existingWordSnapshots.docs.isNotEmpty) {
+      // Kata dalam Bahasa Indonesia sudah ada dalam database
+      infoFailed("Gagal menambah kata baru", "Kata ini sudah ditambahkan");
+      return;
+    }
 
     try {
       // Tampilkan dialog progress dan progress bar
