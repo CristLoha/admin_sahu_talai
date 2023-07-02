@@ -38,18 +38,34 @@ class TableAdmin extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: TextFieldWidget(
-                    controller: adminController.searchController,
-                  ),
+                  child: Obx(() => TextFieldWidget(
+                        controller: adminController.searchController,
+                        suffixIcon: adminController.isFieldEmpty.value
+                            ? null
+                            : IconButton(
+                                icon: const Icon(
+                                  Icons.clear,
+                                  color: Colors.grey,
+                                ),
+                                onPressed: () {
+                                  adminController.searchController.clear();
+                                  adminController.isFieldEmpty.value = true;
+                                  adminController.searchResults.clear();
+                                  adminController.resultDocuments.clear();
+                                  adminController.update();
+                                },
+                              ),
+                      )),
                 ),
                 12.widthBox,
                 AppButton(
-                    width: 90,
-                    height: 46,
-                    text: 'CARI',
-                    onPressed: () {
-                      adminController.search();
-                    }),
+                  width: 90,
+                  height: 46,
+                  text: 'CARI',
+                  onPressed: () {
+                    adminController.search();
+                  },
+                ),
               ],
             ),
             30.heightBox,

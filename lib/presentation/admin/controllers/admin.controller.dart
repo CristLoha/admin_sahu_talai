@@ -19,7 +19,7 @@ class AdminController extends GetxController {
       RxList<QueryDocumentSnapshot>();
   FirebaseAuth auth = FirebaseAuth.instance;
   final RxList<String> searchResults = RxList<String>();
-
+  var isFieldEmpty = true.obs;
   Stream<QuerySnapshot> getStream() {
     return kamus.snapshots();
   }
@@ -28,6 +28,9 @@ class AdminController extends GetxController {
   void onInit() {
     super.onInit();
     loadPatterns();
+    searchController.addListener(() {
+      isFieldEmpty.value = searchController.text.isEmpty;
+    });
   }
 
   Future<void> loadPatterns() async {

@@ -43,24 +43,26 @@ class HomeScreen extends GetView<HomeController> {
             Row(
               children: [
                 Expanded(
-                  child: Obx(() => TextFieldWidget(
-                        controller: controller.searchController,
-                        suffixIcon: controller.isFieldEmpty.value
-                            ? null
-                            : IconButton(
-                                icon: const Icon(
-                                  Icons.clear,
-                                  color: Colors.grey,
-                                ),
-                                onPressed: () {
-                                  controller.searchController.clear();
-                                  controller.isFieldEmpty.value = true;
-                                  controller.searchResults.clear();
-                                  controller.filteredResults.clear();
-                                  controller.update();
-                                },
+                  child: Obx(
+                    () => TextFieldWidget(
+                      controller: controller.searchController,
+                      suffixIcon: controller.isFieldEmpty.value
+                          ? null
+                          : IconButton(
+                              icon: const Icon(
+                                Icons.clear,
+                                color: Colors.grey,
                               ),
-                      )),
+                              onPressed: () {
+                                controller.searchController.clear();
+                                controller.isFieldEmpty.value = true;
+                                controller.searchResults.clear();
+                                controller.filteredResults.clear();
+                                controller.update();
+                              },
+                            ),
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 12),
                 AppButton(
