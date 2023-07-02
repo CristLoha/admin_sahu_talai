@@ -152,19 +152,6 @@ class AddWordsController extends GetxController {
       return;
     }
 
-    // Pastikan ada file audio yang dipilih
-
-    ///pria
-    if (_audioFilePria == null) {
-      infoFailed("Terjadi kesalahan", "Pilih audio terlebih dahulu");
-      return;
-    }
-
-    if (_audioFileWanita == null) {
-      infoFailed("Terjadi kesalahan", "Pilih audio terlebih dahulu");
-      return;
-    }
-
     // Pastikan ada koneksi internet
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
@@ -172,6 +159,7 @@ class AddWordsController extends GetxController {
           "Tidak ada Internet", "Silahkan periksa koneksi internet Anda");
       return;
     }
+
     // Add confirmation dialog here
     var confirmed = await Get.dialog<bool>(
       AlertDialog(
@@ -214,19 +202,13 @@ class AddWordsController extends GetxController {
     }
 
     // Ambil referensi ke Firebase Storage dan Firestore
-    final storageRefPria = FirebaseStorage.instance
-        .ref()
-        .child('audioPria/${DateTime.now().toString()}');
-
-    final storageRefWanita = FirebaseStorage.instance
-        .ref()
-        .child('audioWanita/${DateTime.now().toString()}');
     final firestoreRef = FirebaseFirestore.instance.collection('kamus').doc();
-// Ambil referensi ke koleksi Firestore
+
+    // Ambil referensi ke koleksi Firestore
     final firestoreCollectionRef =
         FirebaseFirestore.instance.collection('kamus');
 
-// Cek apakah kataIndonesia sudah ada dalam database
+    // Cek apakah kataIndonesia sudah ada dalam database
     final existingWordSnapshots = await firestoreCollectionRef
         .where('kataIndonesia', isEqualTo: kIndo.text)
         .get();
@@ -260,36 +242,56 @@ class AddWordsController extends GetxController {
                           .value)), // Ubah progress menjadi sebuah variabel Rx agar dapat diupdate secara reactive
                   const SizedBox(height: 16),
                   Obx(() => Text(
-                      '${(progress * 100).toStringAsFixed(0)}%')), // Ubah progress menjadi sebuah variabel Rx agar dapat diupdate secara reactive
+                      '${(progress.value * 100).toStringAsFixed(0)}%')), // Ubah progress menjadi sebuah variabel Rx agar dapat diupdate secara reactive
                 ],
               ),
             ),
           );
         },
       );
-// Upload file audio untuk pria ke Firebase Storage dan update progress bar
-      final taskpria = storageRefPria.putFile(_audioFilePria!);
-      taskpria.snapshotEvents.listen((snapshot) {
-        updateProgress(snapshot);
-      });
-      await taskpria;
 
-// Upload file audio untuk wanita ke Firebase Storage dan update progress bar
-      final taskWanita = storageRefWanita.putFile(_audioFileWanita!);
-      taskWanita.snapshotEvents.listen((snapshot) {
-        updateProgress(snapshot);
-      });
-      await taskWanita;
+      String? downloadUrlPria;
+      String? downloadUrlWanita;
 
-// Set metadata file audio menjadi "audio/mpeg"
-      final metadata = SettableMetadata(contentType: 'audio/mpeg');
-      await storageRefPria.updateMetadata(metadata);
-      await storageRefWanita.updateMetadata(metadata);
+      // Upload file audio untuk pria ke Firebase Storage dan update progress bar, jika ada
+      if (_audioFilePria != null) {
+        final storageRefPria = FirebaseStorage.instance
+            .ref()
+            .child('audioPria/${DateTime.now().toString()}');
+        final taskpria = storageRefPria.putFile(_audioFilePria!);
+        taskpria.snapshotEvents.listen((snapshot) {
+          updateProgress(snapshot);
+        });
+        await taskpria;
 
-      // Simpan URL file audio di Firestore
-      final downloadUrlPria = await storageRefPria.getDownloadURL();
-      final downloadUrlWanita = await storageRefWanita.getDownloadURL();
+        // Set metadata file audio menjadi "audio/mpeg"
+        final metadata = SettableMetadata(contentType: 'audio/mpeg');
+        await storageRefPria.updateMetadata(metadata);
 
+        // Simpan URL file audio di Firestore
+        downloadUrlPria = await storageRefPria.getDownloadURL();
+      }
+
+      // Upload file audio untuk wanita ke Firebase Storage dan update progress bar, jika ada
+      if (_audioFileWanita != null) {
+        final storageRefWanita = FirebaseStorage.instance
+            .ref()
+            .child('audioWanita/${DateTime.now().toString()}');
+        final taskWanita = storageRefWanita.putFile(_audioFileWanita!);
+        taskWanita.snapshotEvents.listen((snapshot) {
+          updateProgress(snapshot);
+        });
+        await taskWanita;
+
+        // Set metadata file audio menjadi "audio/mpeg"
+        final metadata = SettableMetadata(contentType: 'audio/mpeg');
+        await storageRefWanita.updateMetadata(metadata);
+
+        // Simpan URL file audio di Firestore
+        downloadUrlWanita = await storageRefWanita.getDownloadURL();
+      }
+
+      // Simpan data lainnya di Firestore
       await firestoreRef.set({
         'audioUrlPria': downloadUrlPria,
         'audioUrlWanita': downloadUrlWanita,
@@ -301,8 +303,14 @@ class AddWordsController extends GetxController {
         'addDataTime': DateTime.now().toIso8601String(),
       });
 
-      // Reset file audio
-      resetAudioPria();
+      // Reset file audio jika ada
+      if (_audioFilePria != null) {
+        resetAudioPria();
+      }
+
+      if (_audioFileWanita != null) {
+        resetAudioWanita();
+      }
 
       // Tampilkan pesan sukses
       infoSuccess("Berhasil", "Data berhasil tersimpan");
@@ -313,8 +321,10 @@ class AddWordsController extends GetxController {
     } finally {
       // Tutup dialog progress
       Navigator.of(Get.overlayContext!).pop();
-      // Cek apakah progress sudah 100%
-      if (progress.value == 1.0) {
+
+      // Cek apakah progress sudah 100% atau tidak ada file audio
+      if (progress.value == 1.0 ||
+          (_audioFilePria == null && _audioFileWanita == null)) {
         // Ubah progress menjadi sebuah variabel Rx agar dapat diupdate secara reactive
         // Kembali ke halaman utama setelah proses upload selesai
         Future.delayed(const Duration(milliseconds: 1),

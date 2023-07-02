@@ -80,7 +80,9 @@ class AppWidgetAudioWanita extends StatelessWidget {
           Flexible(
             flex: 1,
             child: Obx(() => Text(
-                  cW.audioFileNameWanita.value,
+                  cW.audioFileNameWanita.value.isEmpty
+                      ? 'Audio belum ada'
+                      : cW.audioFileNameWanita.value,
                   style: darkGrayTextStyle.copyWith(fontWeight: medium),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,

@@ -29,11 +29,13 @@ class AppWidgetAudioPria extends StatelessWidget {
                     barrierDismissible: false,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Reset Audio Pria',
-                            style: darkBlueTextStyle.copyWith(
-                              fontSize: 20,
-                              fontWeight: bold,
-                            )),
+                        title: Text(
+                          'Reset Audio Pria',
+                          style: darkBlueTextStyle.copyWith(
+                            fontSize: 20,
+                            fontWeight: bold,
+                          ),
+                        ),
                         content: Text(
                             'Anda yakin ingin mereset audio pria yang sudah dipilih?',
                             style: darkGrayTextStyle.copyWith(
@@ -80,13 +82,17 @@ class AppWidgetAudioPria extends StatelessWidget {
           Flexible(
             flex: 1,
 
-            ///NAMA
-            child: Obx(() => Text(
-                  c.audioFileNamePria.value,
-                  style: darkGrayTextStyle.copyWith(fontWeight: medium),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                )),
+            ///NAMA AUDIO
+            child: Obx(
+              () => Text(
+                c.audioFileNamePria.value.isEmpty
+                    ? 'Audio belum ada'
+                    : c.audioFileNamePria.value,
+                style: darkGrayTextStyle.copyWith(fontWeight: medium),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
           ),
           if (c.isSelectedPria.value)
             IconButton(
