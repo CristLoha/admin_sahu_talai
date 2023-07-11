@@ -1,4 +1,5 @@
 import 'package:admin_sahu_talai/infrastructure/navigation/routes.dart';
+import 'package:admin_sahu_talai/infrastructure/theme/theme.dart';
 import 'package:admin_sahu_talai/presentation/home/components/dropdown_home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -26,7 +27,7 @@ class HomeScreen extends GetView<HomeController> {
               Get.toNamed(Routes.login);
             },
             child: const Text(
-              "Login",
+              "Admin",
               style: TextStyle(
                 color: Colors.white,
               ),
@@ -106,11 +107,15 @@ class HomeScreen extends GetView<HomeController> {
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
-                  return const Text('Something went wrong');
+                  return const Text('Terjadi Kesalahan');
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Text("Loading");
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: darkGreen,
+                    ),
+                  );
                 }
 
                 return Obx(() {

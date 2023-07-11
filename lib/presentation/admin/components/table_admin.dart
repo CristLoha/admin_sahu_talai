@@ -27,7 +27,11 @@ class TableAdmin extends StatelessWidget {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: Text('Memuat..'));
+          return const Center(
+            child: CircularProgressIndicator(
+              color: darkGreen,
+            ),
+          );
         }
 
         final documents = snapshot.data!.docs;
@@ -97,24 +101,26 @@ class TableAdmin extends StatelessWidget {
             20.heightBox,
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Obx(() {
-                List<QueryDocumentSnapshot> results;
+              child: Obx(
+                () {
+                  List<QueryDocumentSnapshot> results;
 
-                if (adminController.searchResults.isEmpty ||
-                    adminController.searchResults.last == "Data tidak cocok") {
-                  results = documents;
-                } else {
-                  results = documents.where((document) {
-                    Map<String, dynamic> data =
-                        document.data() as Map<String, dynamic>;
-                    return adminController.searchResults
-                            .contains(data['kataSahu']) ||
-                        adminController.searchResults
-                            .contains(data['kataIndonesia']);
-                  }).toList();
-                }
+                  if (adminController.searchResults.isEmpty ||
+                      adminController.searchResults.last ==
+                          "Data tidak cocok") {
+                    results = documents;
+                  } else {
+                    results = documents.where((document) {
+                      Map<String, dynamic> data =
+                          document.data() as Map<String, dynamic>;
+                      return adminController.searchResults
+                              .contains(data['kataSahu']) ||
+                          adminController.searchResults
+                              .contains(data['kataIndonesia']);
+                    }).toList();
+                  }
 
-                return DataTable(
+                  return DataTable(
                     headingRowColor: MaterialStateProperty.resolveWith<Color>(
                       (Set<MaterialState> states) {
                         if (states.contains(MaterialState.selected)) {
@@ -149,56 +155,61 @@ class TableAdmin extends StatelessWidget {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, color: white))),
                     ],
-                    rows: List<DataRow>.generate(results.length, (index) {
-                      QueryDocumentSnapshot document = results[index];
-                      Map<String, dynamic> data =
-                          document.data() as Map<String, dynamic>;
+                    rows: List<DataRow>.generate(
+                      results.length,
+                      (index) {
+                        QueryDocumentSnapshot document = results[index];
+                        Map<String, dynamic> data =
+                            document.data() as Map<String, dynamic>;
 
-                      return DataRow(
-                        cells: <DataCell>[
-                          DataCell(Text(document.id.length >= 5
-                              ? document.id.substring(0, 5)
-                              : document.id)),
-                          DataCell(Text(data['kategori'] ?? 'N/A')),
-                          DataCell(Text(data['kataIndonesia'] ?? 'N/A')),
-                          DataCell(
-                            UnderlineText(
-                              text: data['kataSahu'] ?? 'N/A',
+                        return DataRow(
+                          cells: <DataCell>[
+                            DataCell(Text(document.id.length >= 5
+                                ? document.id.substring(0, 5)
+                                : document.id)),
+                            DataCell(Text(data['kategori'] ?? 'N/A')),
+                            DataCell(Text(data['kataIndonesia'] ?? 'N/A')),
+                            DataCell(
+                              UnderlineText(
+                                text: data['kataSahu'] ?? 'N/A',
+                              ),
                             ),
-                          ),
-                          DataCell(
-                            Row(
-                              children: <Widget>[
-                                IconButton(
-                                  icon: const Icon(Icons.info),
-                                  onPressed: () {
-                                    Get.toNamed(Routes.admindDetail,
-                                        arguments: data);
-                                    print(index);
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.edit),
-                                  onPressed: () {
-                                    Get.toNamed(Routes.editAdmin,
-                                        arguments: document.id);
-                                  },
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: red,
+                            DataCell(
+                              Row(
+                                children: <Widget>[
+                                  IconButton(
+                                    icon: const Icon(Icons.info),
+                                    onPressed: () {
+                                      Get.toNamed(Routes.admindDetail,
+                                          arguments: data);
+                                      print(index);
+                                    },
                                   ),
-                                  onPressed: () =>
-                                      adminController.deleteHewan(document.id),
-                                ),
-                              ],
+                                  IconButton(
+                                    icon: Icon(Icons.edit),
+                                    onPressed: () {
+                                      Get.toNamed(Routes.editAdmin,
+                                          arguments: document.id);
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: red,
+                                    ),
+                                    onPressed: () => adminController
+                                        .deleteHewan(document.id),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      );
-                    }));
-              }),
+                          ],
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         );

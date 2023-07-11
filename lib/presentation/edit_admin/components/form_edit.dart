@@ -4,6 +4,7 @@ import 'package:admin_sahu_talai/presentation/edit_admin/controllers/edit_admin.
 import 'package:admin_sahu_talai/utils/extension/box_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../infrastructure/theme/theme.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/app_input.dart';
 import '../../../widgets/title_input.dart';
@@ -25,7 +26,9 @@ class FormEditKamus extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(
+              color: darkGreen,
+            ),
           );
         }
 
