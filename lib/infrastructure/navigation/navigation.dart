@@ -67,5 +67,10 @@ class Nav {
       page: () => const EditAdminScreen(),
       binding: EditAdminControllerBinding(),
     ),
+    GetPage(
+      name: Routes.SPLASH_SCREEN,
+      page: () => const SplashScreenScreen(),
+      binding: SplashScreenControllerBinding(),
+    ),
   ];
 }
