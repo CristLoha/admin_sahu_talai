@@ -1,6 +1,6 @@
 class Routes {
   static Future<String> get initialRoute async {
-    return home;
+    return splashScreen;
   }
 
   static const addwords = '/add-words';
@@ -10,5 +10,5 @@ class Routes {
   static const editAdmin = '/edit-admin';
   static const home = '/home';
   static const login = '/login';
-  static const SPLASH_SCREEN = '/splash-screen';
+  static const splashScreen = '/splash';
 }

@@ -31,10 +31,13 @@ class AppDropDownAdd extends StatelessWidget {
               style: const TextStyle(color: darkBlue),
               underline: const SizedBox.shrink(),
               onChanged: c.onOptionChanged,
-              items: c.options.map((String option) {
+              items: c.options.asMap().entries.map((entry) {
+                int index = entry.key;
+                String value = entry.value;
                 return DropdownMenuItem<String>(
-                  value: option,
-                  child: Text(option),
+                  value: value,
+                  // Tampilkan indeks + 1 dan kategori untuk setiap item
+                  child: Text("${index + 1}. $value"),
                 );
               }).toList(),
             ),

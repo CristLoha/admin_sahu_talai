@@ -19,7 +19,7 @@ class HomeScreen extends GetView<HomeController> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.green,
-        title: const Text("Kamus Sahu Tala'i"),
+        title: const Text("Kamus Bahasa Sahu"),
         centerTitle: true,
         actions: <Widget>[
           TextButton(

@@ -147,7 +147,7 @@ class HomeController extends GetxController {
             resultCount++; // Meningkatkan jumlah hasil yang ditemukan
             ahoCorasick.buildSuffixAndOutputLinks();
             ahoCorasick.printTransitionTable();
-            ahoCorasick.bfs();
+            // ahoCorasick.bfs();
             if (resultCount >= 3) {
               // Jika jumlah hasil sudah mencapai 3, hentikan pencarian
               break;
@@ -159,10 +159,15 @@ class HomeController extends GetxController {
 
     stopwatch.stop();
 
+    // Get.snackbar('d', 'dd');
     if (!dataFound && searchController.text.isNotEmpty) {
       infoFailed(msg1: 'Hasil Pencarian', msg2: "Kata tidak ditemukan");
     } else {
       filteredResults = RxList<QueryDocumentSnapshot>.from(searchResults);
+      print(
+          'Kata ${searchController.text} ditemukan dalam ${stopwatch.elapsedMilliseconds} ms');
+      print(
+          'Kata ${searchController.text} ditemukan dalam ${stopwatch.elapsedMilliseconds / 1000} detik');
     }
 
     update();

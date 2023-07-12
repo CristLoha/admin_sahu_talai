@@ -22,16 +22,16 @@ class AddWordsController extends GetxController {
   var errorText = ''.obs;
 
   RxString selectedOption = ''.obs;
+
   List<String> options = [
+    'Semua',
     'Benda',
     'Kerja',
     'Sifat',
-    'Depan',
-    'Tumbuhan',
-    'Tempat',
-    'Angka',
     'Tempat/Lokasi',
-    'Panggilan'
+    'Panggilan',
+    'Angka',
+    'Depan',
   ];
 
   TextEditingController kSahu = TextEditingController();

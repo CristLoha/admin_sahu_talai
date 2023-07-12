@@ -1,6 +1,5 @@
 import 'package:admin_sahu_talai/utils/extension/box_extension.dart';
 import 'package:flutter/material.dart';
-
 import '../../../infrastructure/theme/theme.dart';
 
 class FooterSplash extends StatelessWidget {
