@@ -32,6 +32,7 @@ class EditAdminController extends GetxController {
   RxString selectedOption = ''.obs;
   List<String> options = [
     'Semua',
+    'Ganti',
     'Benda',
     'Kerja',
     'Sifat',

@@ -25,6 +25,7 @@ class AddWordsController extends GetxController {
 
   List<String> options = [
     'Semua',
+    'Ganti',
     'Benda',
     'Kerja',
     'Sifat',

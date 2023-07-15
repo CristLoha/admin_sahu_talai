@@ -85,8 +85,15 @@ class DetailScreen extends GetView<DetailController> {
                                   AudioButton(
                                     isPlaying: _audioController.isPlayingPria,
                                     onTap: () async {
-                                      await _audioController.togglePlayingPria(
-                                          data['audioUrlPria']);
+                                      if (data['audioUrlPria'] != null) {
+                                        await _audioController
+                                            .togglePlayingPria(
+                                                data['audioUrlPria']);
+                                      } else {
+                                        _audioController.infoFailed(
+                                            "File audio belum tersedia",
+                                            "Mohon maaf, file audio belum tersedia");
+                                      }
                                     },
                                     label: 'Pria',
                                   ),
@@ -94,9 +101,15 @@ class DetailScreen extends GetView<DetailController> {
                                   AudioButton(
                                     isPlaying: _audioController.isPlayingWanita,
                                     onTap: () async {
-                                      await _audioController
-                                          .togglePlayingWanita(
-                                              data['audioUrlWanita']);
+                                      if (data['audioUrlWanita'] != null) {
+                                        await _audioController
+                                            .togglePlayingWanita(
+                                                data['audioUrlWanita']);
+                                      } else {
+                                        _audioController.infoFailed(
+                                            "File audio belum tersedia",
+                                            "Mohon maaf, file audio belum tersedia");
+                                      }
                                     },
                                     label: 'Wanita',
                                   ),

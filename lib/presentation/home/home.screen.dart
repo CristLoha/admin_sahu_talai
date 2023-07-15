@@ -3,6 +3,7 @@ import 'package:admin_sahu_talai/infrastructure/theme/theme.dart';
 import 'package:admin_sahu_talai/presentation/home/components/dropdown_home.dart';
 import 'package:admin_sahu_talai/utils/extension/box_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -81,7 +82,10 @@ class HomeScreen extends GetView<HomeController> {
                 Expanded(
                   child: Obx(
                     () => RadioListTile<LanguageDirection>(
-                      title: const Text('IND-SAHU'),
+                      title: Text(
+                        'IND-SAHU',
+                        style: TextStyle(fontSize: 14.sp),
+                      ),
                       value: LanguageDirection.indSahu,
                       groupValue: controller.selectedDirection.value,
                       onChanged: (value) {

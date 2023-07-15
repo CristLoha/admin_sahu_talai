@@ -54,14 +54,7 @@ class HomeController extends GetxController {
   final Map<String, String> categories = {};
 
   Future<void> loadPatterns() async {
-    QuerySnapshot snapshot;
-
-    if (selectedOption.value == 'Semua') {
-      snapshot = await kamus.get();
-    } else {
-      snapshot =
-          await kamus.where('kategori', isEqualTo: selectedOption.value).get();
-    }
+    QuerySnapshot snapshot = await kamus.get();
 
     patterns.clear();
     categories.clear();
@@ -80,47 +73,6 @@ class HomeController extends GetxController {
     ahoCorasick.buildSuffixAndOutputLinks();
   }
 
-  // void search() {
-  //   String query = searchController.text.replaceAll('_', '');
-  //   List<String> tokens = query.split(' ');
-  //   query = query.replaceAllMapped(RegExp(r'_\w'), (m) => '${m.group(0)![1]}̲');
-  //   Stopwatch stopwatch = Stopwatch()..start();
-
-  //   searchResults.clear();
-  //   bool dataFound = false;
-
-  //   for (String token in tokens) {
-  //     final indices = List.generate(patterns.length, (_) => <int>[]);
-  //     ahoCorasick.searchPattern(token, indices);
-
-  //     for (int i = 0; i < patterns.length; i++) {
-  //       if (indices[i].isNotEmpty) {
-  //         QueryDocumentSnapshot originalPattern = patterns.values.elementAt(i);
-  //         if (!searchResults.contains(originalPattern)) {
-  //           String originalPatternInd = originalPattern.get('kataIndonesia');
-  //           String originalPatternSahu = originalPattern.get('kataSahu');
-  //           if (selectedOption.value == 'Semua' ||
-  //               selectedOption.value == categories[originalPatternInd] ||
-  //               selectedOption.value == categories[originalPatternSahu]) {
-  //             searchResults.add(originalPattern);
-  //             dataFound = true;
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-
-  //   stopwatch.stop();
-
-  //   if (!dataFound && searchController.text.isNotEmpty) {
-  //     Get.snackbar('Hasil Pencarian', 'Kata tidak ditemukan');
-  //   } else {
-  //     filteredResults = RxList<QueryDocumentSnapshot>.from(searchResults);
-  //   }
-
-  //   update();
-  // }
-  /// menghapus tokens
   void search() {
     String query = searchController.text.replaceAll('_', '');
     query = query.replaceAllMapped(RegExp(r'_\w'), (m) => '${m.group(0)![1]}̲');
@@ -159,19 +111,23 @@ class HomeController extends GetxController {
 
     stopwatch.stop();
 
-    // Get.snackbar('d', 'dd');
     if (!dataFound && searchController.text.isNotEmpty) {
       infoFailed(
-          msg1: 'Hasil Pencarian',
-          msg2: "Kata ${searchController.text} tidak ditemukan");
+        msg1: 'Hasil Pencarian',
+        msg2: "Kata ${searchController.text} tidak ditemukan",
+      );
     } else {
       filteredResults = RxList<QueryDocumentSnapshot>.from(searchResults);
       print(
-          'Kata ${searchController.text} ditemukan dalam ${stopwatch.elapsedMilliseconds} ms');
+        'Kata ${searchController.text} ditemukan dalam ${stopwatch.elapsedMilliseconds} ms',
+      );
       print(
-          'Kata ${searchController.text} ditemukan dalam ${stopwatch.elapsedMilliseconds / 1000} detik');
-      infoSuccess("Hasil Pencarian",
-          "Kata ${searchController.text} ditemukan dalam  ${stopwatch.elapsedMilliseconds / 1000} detik ");
+        'Kata ${searchController.text} ditemukan dalam ${stopwatch.elapsedMilliseconds / 1000} detik',
+      );
+      infoSuccess(
+        "Hasil Pencarian",
+        "Kata ${searchController.text} ditemukan dalam ${stopwatch.elapsedMilliseconds / 1000} detik",
+      );
     }
 
     update();
@@ -179,6 +135,7 @@ class HomeController extends GetxController {
 
   List<String> options = [
     'Semua',
+    'Ganti',
     'Benda',
     'Kerja',
     'Sifat',
