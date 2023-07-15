@@ -1,5 +1,6 @@
 import 'package:admin_sahu_talai/utils/extension/box_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../app/controller/audio_controller.dart';
 import '../../infrastructure/theme/theme.dart';
@@ -33,8 +34,8 @@ class DetailScreen extends GetView<DetailController> {
             children: [
               Container(
                 height: c.selectedDirection.value == LanguageDirection.sahuInd
-                    ? 260
-                    : 200,
+                    ? 260.h
+                    : 200.h,
                 color: shamrockGreen,
                 child: SafeArea(
                   child: Obx(
@@ -49,8 +50,8 @@ class DetailScreen extends GetView<DetailController> {
                                         LanguageDirection.indSahu
                                     ? data['kataIndonesia'].toString()
                                     : data['kataSahu'].toString(),
-                                textStyle: const TextStyle(
-                                  fontSize: 40,
+                                textStyle: TextStyle(
+                                  fontSize: 40.sp,
                                   fontWeight: FontWeight.w500,
                                   color: white,
                                 ),
@@ -63,8 +64,8 @@ class DetailScreen extends GetView<DetailController> {
                                         LanguageDirection.indSahu
                                     ? data['kataSahu'].toString()
                                     : data['kataIndonesia'].toString(),
-                                textStyle: const TextStyle(
-                                  fontSize: 25,
+                                textStyle: TextStyle(
+                                  fontSize: 25.sp,
                                   fontWeight: FontWeight.w400,
                                   color: white,
                                 ),
@@ -114,10 +115,10 @@ class DetailScreen extends GetView<DetailController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Contoh Kalimat: ',
                       style: TextStyle(
-                        fontSize: 30,
+                        fontSize: 30.sp,
                         fontWeight: FontWeight.w500,
                         color: darkBlue,
                       ),
@@ -127,8 +128,8 @@ class DetailScreen extends GetView<DetailController> {
                           c.selectedDirection.value == LanguageDirection.indSahu
                               ? data['contohKataIndo'].toString()
                               : data['contohKataSahu'].toString(),
-                      textStyle: const TextStyle(
-                        fontSize: 28,
+                      textStyle: TextStyle(
+                        fontSize: 28.sp,
                         fontWeight: FontWeight.w400,
                         color: darkBlue,
                       ),

@@ -1,5 +1,6 @@
 import 'package:admin_sahu_talai/utils/extension/box_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 
@@ -34,7 +35,7 @@ class AdminDetailScreen extends GetView<AdminDetailController> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                height: 260,
+                height: 260.h,
                 color: shamrockGreen,
                 child: SafeArea(
                   child: Column(
@@ -45,8 +46,8 @@ class AdminDetailScreen extends GetView<AdminDetailController> {
                           Center(
                             child: UnderlineText(
                               text: data['kataSahu'].toString(),
-                              textStyle: const TextStyle(
-                                fontSize: 40,
+                              textStyle: TextStyle(
+                                fontSize: 40.sp,
                                 fontWeight: FontWeight.w500,
                                 color: white,
                               ),
@@ -56,8 +57,8 @@ class AdminDetailScreen extends GetView<AdminDetailController> {
                           Center(
                             child: UnderlineText(
                               text: data['kataIndonesia'].toString(),
-                              textStyle: const TextStyle(
-                                fontSize: 25,
+                              textStyle: TextStyle(
+                                fontSize: 25.sp,
                                 fontWeight: FontWeight.w400,
                                 color: white,
                               ),
@@ -98,35 +99,35 @@ class AdminDetailScreen extends GetView<AdminDetailController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       "Contoh Kalimat Sahu: ",
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 24.sp,
                         fontWeight: FontWeight.w500,
                         color: darkBlue,
                       ),
                     ),
                     UnderlineText(
                       text: data['contohKataSahu'] ?? 'N/A',
-                      textStyle: const TextStyle(
-                        fontSize: 22,
+                      textStyle: TextStyle(
+                        fontSize: 22.sp,
                         fontWeight: FontWeight.w400,
                         color: darkBlue,
                       ),
                     ),
                     10.heightBox,
-                    const Text(
+                    Text(
                       "Contoh Kalimat Indonesia:",
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 24.sp,
                         fontWeight: FontWeight.w500,
                         color: darkBlue,
                       ),
                     ),
                     UnderlineText(
                       text: data['contohKataIndo'] ?? 'N/A',
-                      textStyle: const TextStyle(
-                        fontSize: 22,
+                      textStyle: TextStyle(
+                        fontSize: 22.sp,
                         fontWeight: FontWeight.w400,
                         color: darkBlue,
                       ),

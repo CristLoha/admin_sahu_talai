@@ -52,7 +52,7 @@ class FormUploadAdd extends StatelessWidget {
               ),
               16.heightBox,
               const TittleInput(
-                text: 'Contoh  Indonesia',
+                text: 'Contoh Indonesia',
               ),
               8.heightBox,
               AppInput(

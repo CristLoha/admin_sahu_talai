@@ -1,5 +1,6 @@
 import 'package:admin_sahu_talai/utils/extension/box_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:fluttericon/font_awesome_icons.dart';
 
@@ -18,7 +19,7 @@ class FormLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 327,
+      width: 327.w,
       decoration: const BoxDecoration(
         color: white,
         borderRadius: BorderRadius.all(

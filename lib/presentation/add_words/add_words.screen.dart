@@ -37,13 +37,16 @@ class AddWordsScreen extends GetView<AddWordsController> {
                             const EdgeInsets.only(left: 24, right: 24, top: 20),
                         child: Container(
                           decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(13)),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(13),
+                            ),
                             color: white,
                           ),
                           child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 30, horizontal: 22),
-                              child: FormUploadAdd()),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 30, horizontal: 22),
+                            child: FormUploadAdd(),
+                          ),
                         ),
                       ),
                     ],

@@ -24,6 +24,7 @@ dependencies:
   audioplayers: 4.1.0
   lottie: 2.4.0
   path_provider: 2.0.15
+  flutter_screenutil: 5.8.4
   flutter: 
     sdk: flutter
 

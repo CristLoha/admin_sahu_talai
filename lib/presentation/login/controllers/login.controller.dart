@@ -11,9 +11,8 @@ import '../../../infrastructure/theme/theme.dart';
 
 class LoginController extends GetxController {
   final GlobalKey<FormState> formKeys = GlobalKey<FormState>();
-  TextEditingController emailC =
-      TextEditingController(text: 'admin2@gmail.com');
-  TextEditingController passC = TextEditingController(text: '123456');
+  TextEditingController emailC = TextEditingController(text: 'admin@gmail.com');
+  TextEditingController passC = TextEditingController(text: 'admin12345');
   FirebaseAuth auth = FirebaseAuth.instance;
   RxBool isHidden = true.obs;
 

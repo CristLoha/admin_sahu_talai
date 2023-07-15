@@ -1,6 +1,7 @@
 import 'package:admin_sahu_talai/infrastructure/navigation/routes.dart';
 import 'package:admin_sahu_talai/infrastructure/theme/theme.dart';
 import 'package:admin_sahu_talai/presentation/home/components/dropdown_home.dart';
+import 'package:admin_sahu_talai/utils/extension/box_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -65,7 +66,7 @@ class HomeScreen extends GetView<HomeController> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                12.widthBox,
                 AppButton(
                   width: 90,
                   height: 46,
@@ -74,18 +75,20 @@ class HomeScreen extends GetView<HomeController> {
                 ),
               ],
             ),
-            const SizedBox(height: 10),
+            10.widthBox,
             Row(
               children: [
                 Expanded(
-                  child: Obx(() => RadioListTile<LanguageDirection>(
-                        title: const Text('IND-SAHU'),
-                        value: LanguageDirection.indSahu,
-                        groupValue: controller.selectedDirection.value,
-                        onChanged: (value) {
-                          controller.setDirection(value!);
-                        },
-                      )),
+                  child: Obx(
+                    () => RadioListTile<LanguageDirection>(
+                      title: const Text('IND-SAHU'),
+                      value: LanguageDirection.indSahu,
+                      groupValue: controller.selectedDirection.value,
+                      onChanged: (value) {
+                        controller.setDirection(value!);
+                      },
+                    ),
+                  ),
                 ),
                 Expanded(
                   child: Obx(() => RadioListTile<LanguageDirection>(
@@ -99,9 +102,9 @@ class HomeScreen extends GetView<HomeController> {
                 ),
               ],
             ),
-            const SizedBox(height: 10),
+            10.heightBox,
             AppDropDownHome(),
-            const SizedBox(height: 30),
+            30.heightBox,
             StreamBuilder<QuerySnapshot>(
               stream: controller.stream.value,
               builder: (BuildContext context,
@@ -139,17 +142,19 @@ class HomeScreen extends GetView<HomeController> {
                             .toList();
                       }
 
-                      sortedDocs.sort((a, b) {
-                        String aKata = a[controller.selectedDirection.value ==
-                                LanguageDirection.indSahu
-                            ? 'kataIndonesia'
-                            : 'kataSahu'];
-                        String bKata = b[controller.selectedDirection.value ==
-                                LanguageDirection.indSahu
-                            ? 'kataIndonesia'
-                            : 'kataSahu'];
-                        return aKata.compareTo(bKata);
-                      });
+                      sortedDocs.sort(
+                        (a, b) {
+                          String aKata = a[controller.selectedDirection.value ==
+                                  LanguageDirection.indSahu
+                              ? 'kataIndonesia'
+                              : 'kataSahu'];
+                          String bKata = b[controller.selectedDirection.value ==
+                                  LanguageDirection.indSahu
+                              ? 'kataIndonesia'
+                              : 'kataSahu'];
+                          return aKata.compareTo(bKata);
+                        },
+                      );
 
                       displayData = sortedDocs;
                     } else {

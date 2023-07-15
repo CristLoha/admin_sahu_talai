@@ -3,6 +3,7 @@ import 'package:admin_sahu_talai/infrastructure/theme/theme.dart';
 import 'package:admin_sahu_talai/utils/extension/box_extension.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:admin_sahu_talai/presentation/admin/controllers/admin.controller.dart';
 
@@ -92,9 +93,9 @@ class TableAdmin extends StatelessWidget {
 
               return Text(
                 "Total kata: ${results.length}",
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 20,
+                  fontSize: 20.sp,
                 ),
               );
             }),
