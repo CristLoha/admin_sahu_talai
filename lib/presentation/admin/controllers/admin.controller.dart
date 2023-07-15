@@ -2,6 +2,7 @@ import 'package:admin_sahu_talai/infrastructure/navigation/routes.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -98,10 +99,9 @@ class AdminController extends GetxController {
       searchResults.clear();
       searchResults.add("Data tidak cocok");
       print('Data tidak cocok');
-      Get.snackbar(
-        'Hasil Pencarian',
-        'Kata tidak ditemukan',
-      );
+      infoFailed(
+          msg1: 'Hasil Pencarian',
+          msg2: "Kata ${searchController.text} tidak ditemukan");
     }
 
     print(
@@ -220,6 +220,41 @@ class AdminController extends GetxController {
     ).show();
   }
 
-  void allertNotif(String titleDialog, String subDialog, String titleContent,
-      String subContent) {}
+  void infoFailed({String? msg1, String? msg2}) {
+    Get.snackbar(
+      "",
+      "",
+      backgroundColor: oldRose,
+      colorText: white,
+      snackPosition: SnackPosition.BOTTOM,
+      margin: const EdgeInsets.all(0),
+      borderRadius: 0,
+      duration: const Duration(seconds: 8),
+      animationDuration: const Duration(milliseconds: 600),
+      reverseAnimationCurve: Curves.easeInBack,
+      isDismissible: true,
+      dismissDirection: DismissDirection.horizontal,
+      showProgressIndicator: false,
+      overlayBlur: 0.0,
+      overlayColor: darkBlue,
+      icon: const Icon(
+        EvaIcons.alertCircleOutline,
+        color: white,
+      ),
+      shouldIconPulse: true,
+      leftBarIndicatorColor: oldRose,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      snackStyle: SnackStyle.FLOATING,
+      titleText: Text(
+        msg1!,
+        style: whiteTextStyle.copyWith(
+          fontWeight: bold,
+        ),
+      ),
+      messageText: Text(
+        msg2!,
+        style: whiteTextStyle.copyWith(fontWeight: medium, fontSize: 12),
+      ),
+    );
+  }
 }

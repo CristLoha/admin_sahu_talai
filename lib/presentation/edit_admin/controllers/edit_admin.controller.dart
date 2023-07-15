@@ -31,17 +31,15 @@ class EditAdminController extends GetxController {
 
   RxString selectedOption = ''.obs;
   List<String> options = [
+    'Semua',
     'Benda',
     'Kerja',
     'Sifat',
-    'Depan',
-    'Tumbuhan',
-    'Tempat',
-    'Angka',
     'Tempat/Lokasi',
-    'Panggilan'
+    'Panggilan',
+    'Angka',
+    'Depan',
   ];
-
   TextEditingController kSahu = TextEditingController();
   TextEditingController cKSahu = TextEditingController();
   TextEditingController kIndo = TextEditingController();

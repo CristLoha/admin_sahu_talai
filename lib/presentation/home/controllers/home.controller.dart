@@ -161,13 +161,17 @@ class HomeController extends GetxController {
 
     // Get.snackbar('d', 'dd');
     if (!dataFound && searchController.text.isNotEmpty) {
-      infoFailed(msg1: 'Hasil Pencarian', msg2: "Kata tidak ditemukan");
+      infoFailed(
+          msg1: 'Hasil Pencarian',
+          msg2: "Kata ${searchController.text} tidak ditemukan");
     } else {
       filteredResults = RxList<QueryDocumentSnapshot>.from(searchResults);
       print(
           'Kata ${searchController.text} ditemukan dalam ${stopwatch.elapsedMilliseconds} ms');
       print(
           'Kata ${searchController.text} ditemukan dalam ${stopwatch.elapsedMilliseconds / 1000} detik');
+      infoSuccess("Hasil Pencarian",
+          "Kata ${searchController.text} ditemukan dalam  ${stopwatch.elapsedMilliseconds / 1000} detik ");
     }
 
     update();
@@ -214,7 +218,7 @@ class HomeController extends GetxController {
       snackPosition: SnackPosition.BOTTOM,
       margin: const EdgeInsets.all(0),
       borderRadius: 0,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 8),
       animationDuration: const Duration(milliseconds: 600),
       reverseAnimationCurve: Curves.easeInBack,
       isDismissible: true,
@@ -238,6 +242,44 @@ class HomeController extends GetxController {
       ),
       messageText: Text(
         msg2!,
+        style: whiteTextStyle.copyWith(fontWeight: medium, fontSize: 12),
+      ),
+    );
+  }
+
+  void infoSuccess(String msg1, String msg2) {
+    Get.snackbar(
+      "",
+      "",
+      backgroundColor: shamrockGreen,
+      colorText: white,
+      snackPosition: SnackPosition.BOTTOM,
+      margin: const EdgeInsets.all(0),
+      borderRadius: 0,
+      duration: const Duration(seconds: 2),
+      animationDuration: const Duration(milliseconds: 600),
+      reverseAnimationCurve: Curves.easeInBack,
+      isDismissible: true,
+      dismissDirection: DismissDirection.horizontal,
+      showProgressIndicator: false,
+      overlayBlur: 0.0,
+      overlayColor: white, // Menggunakan warna putih
+      icon: const Icon(
+        EvaIcons.checkmarkCircle2Outline,
+        color: white,
+      ),
+      shouldIconPulse: true,
+      leftBarIndicatorColor: shamrockGreen,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      snackStyle: SnackStyle.FLOATING,
+      titleText: Text(
+        msg1,
+        style: whiteTextStyle.copyWith(
+          fontWeight: bold,
+        ),
+      ),
+      messageText: Text(
+        msg2,
         style: whiteTextStyle.copyWith(fontWeight: medium, fontSize: 12),
       ),
     );
