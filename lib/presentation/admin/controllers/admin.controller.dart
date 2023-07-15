@@ -229,7 +229,7 @@ class AdminController extends GetxController {
       snackPosition: SnackPosition.BOTTOM,
       margin: const EdgeInsets.all(0),
       borderRadius: 0,
-      duration: const Duration(seconds: 8),
+      duration: const Duration(seconds: 4),
       animationDuration: const Duration(milliseconds: 600),
       reverseAnimationCurve: Curves.easeInBack,
       isDismissible: true,
