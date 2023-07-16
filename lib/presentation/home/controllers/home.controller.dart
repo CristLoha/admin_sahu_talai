@@ -118,16 +118,28 @@ class HomeController extends GetxController {
       );
     } else {
       filteredResults = RxList<QueryDocumentSnapshot>.from(searchResults);
-      print(
-        'Kata ${searchController.text} ditemukan dalam ${stopwatch.elapsedMilliseconds} ms',
-      );
-      print(
-        'Kata ${searchController.text} ditemukan dalam ${stopwatch.elapsedMilliseconds / 1000} detik',
-      );
-      infoSuccess(
-        "Hasil Pencarian",
-        "Kata ${searchController.text} ditemukan dalam ${stopwatch.elapsedMilliseconds / 1000} detik",
-      );
+
+      if (dataFound && searchController.text.isNotEmpty) {
+        // String selectedCategory = selectedOption.value;
+        // String selectedCategoryName =
+        //     categories[selectedCategory] ?? selectedCategory;
+
+        // infoSuccess(
+        //   "Hasil Pencarian",
+        //   "Kata ${searchController.text} ditemukan dalam ${stopwatch.elapsedMilliseconds / 1000} detik. Dengan Kategori: $selectedCategoryName",
+        // );
+        infoSuccess(
+          "Hasil Pencarian",
+          "Kata ${searchController.text} ditemukan dalam ${stopwatch.elapsedMilliseconds / 1000} detik",
+        );
+
+        print(
+          'Kata ${searchController.text} ditemukan dalam ${stopwatch.elapsedMilliseconds} ms',
+        );
+        print(
+          'Kata ${searchController.text} ditemukan dalam ${stopwatch.elapsedMilliseconds / 1000} detik',
+        );
+      }
     }
 
     update();
@@ -175,7 +187,7 @@ class HomeController extends GetxController {
       snackPosition: SnackPosition.BOTTOM,
       margin: const EdgeInsets.all(0),
       borderRadius: 0,
-      duration: const Duration(seconds: 8),
+      duration: const Duration(seconds: 3),
       animationDuration: const Duration(milliseconds: 600),
       reverseAnimationCurve: Curves.easeInBack,
       isDismissible: true,

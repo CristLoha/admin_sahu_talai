@@ -51,7 +51,11 @@ class DetailScreen extends GetView<DetailController> {
                                     ? data['kataIndonesia'].toString()
                                     : data['kataSahu'].toString(),
                                 textStyle: TextStyle(
-                                  fontSize: 40.sp,
+                                  fontSize:
+                                      data['kataIndonesia'].toString().length >
+                                              10
+                                          ? 14.0
+                                          : 30.0,
                                   fontWeight: FontWeight.w500,
                                   color: white,
                                 ),
